@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 const links = [
-  { href: "#home", label: "Home" },
-  { href: "#about", label: "About" },
-  { href: "#skills", label: "Skills" },
-  { href: "#experience", label: "Experience" },
-  { href: "#projects", label: "Projects" },
-  { href: "#contact", label: "Contact" },
-];
+  { to: "/", label: "Home" },
+  { to: "/about", label: "About" },
+  { to: "/skills", label: "Skills" },
+  { to: "/experience", label: "Experience" },
+  { to: "/projects", label: "Projects" },
+  { to: "/contact", label: "Contact" },
+] as const;
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -26,18 +27,21 @@ export function Nav() {
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6">
-        <a href="#home" className="font-serif text-2xl tracking-tight">
+        <Link to="/" className="font-serif text-2xl tracking-tight">
           HL<span className="text-primary">.</span>
-        </a>
+        </Link>
         <ul className="hidden items-center gap-10 md:flex">
           {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-primary"
+            <li key={l.to}>
+              <Link
+                to={l.to}
+                activeOptions={{ exact: true }}
+                activeProps={{ className: "text-primary" }}
+                inactiveProps={{ className: "text-muted-foreground" }}
+                className="font-mono text-xs uppercase tracking-[0.2em] transition-colors hover:text-primary"
               >
                 {l.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -56,14 +60,17 @@ export function Nav() {
       {open && (
         <ul className="glass mt-3 mx-6 rounded-lg p-4 space-y-3 md:hidden">
           {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
+            <li key={l.to}>
+              <Link
+                to={l.to}
+                activeOptions={{ exact: true }}
                 onClick={() => setOpen(false)}
-                className="block font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-primary"
+                activeProps={{ className: "text-primary" }}
+                inactiveProps={{ className: "text-muted-foreground" }}
+                className="block font-mono text-xs uppercase tracking-[0.2em] hover:text-primary"
               >
                 {l.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
