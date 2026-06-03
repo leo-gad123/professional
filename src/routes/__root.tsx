@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Nav } from "@/components/Nav";
+import { ParticleBackground } from "@/components/ParticleBackground";
 
 function NotFoundComponent() {
   return (
@@ -77,14 +79,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { title: "Hakizimana Leogad — Embedded Systems & IoT Engineer" },
+      { name: "description", content: "Portfolio of Hakizimana Leogad — Embedded Systems Developer, IoT Engineer, Arduino programmer and electronics enthusiast based in Kigali, Rwanda." },
+      { name: "author", content: "Hakizimana Leogad" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -121,8 +118,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
+        <ParticleBackground />
+        <Nav />
+        <main>
+          <Outlet />
+        </main>
+      </div>
     </QueryClientProvider>
   );
 }

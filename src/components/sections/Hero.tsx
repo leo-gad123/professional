@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 export function Hero() {
   return (
     <section id="home" className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-24">
@@ -26,25 +28,25 @@ export function Hero() {
         </p>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4 animate-float-up" style={{ animationDelay: "0.4s" }}>
-          <a
-            href="#projects"
+          <Link
+            to="/projects"
             className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 font-mono text-xs uppercase tracking-[0.2em] text-primary-foreground transition-all hover:shadow-[0_0_30px_oklch(0.85_0.16_207/0.6)]"
           >
             View Projects
             <span className="transition-transform group-hover:translate-x-1">→</span>
-          </a>
+          </Link>
           <a
             href="/cv.pdf"
             className="inline-flex items-center gap-2 rounded-full border border-primary/40 px-7 py-3 font-mono text-xs uppercase tracking-[0.2em] text-primary transition-all hover:bg-primary/10"
           >
             Download CV
           </a>
-          <a
-            href="#contact"
+          <Link
+            to="/contact"
             className="inline-flex items-center gap-2 rounded-full border border-border px-7 py-3 font-mono text-xs uppercase tracking-[0.2em] text-foreground transition-all hover:border-primary/50"
           >
             Contact Me
-          </a>
+          </Link>
         </div>
       </div>
 
