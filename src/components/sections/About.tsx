@@ -1,4 +1,4 @@
-import portrait from "@/assets/portrait.png.asset.json";
+
 import { SectionHeading } from "../SectionHeading";
 
 const focus = [
@@ -15,16 +15,8 @@ export function About() {
     <section id="about" className="relative px-6 py-32">
       <div className="mx-auto max-w-6xl">
         <SectionHeading eyebrow="About" title="Who I" accent="Am" />
-        <div className="grid gap-12 md:grid-cols-5 items-center">
-          <div className="md:col-span-2">
-            <div className="relative mx-auto max-w-sm">
-              <div className="absolute -inset-2 rounded-3xl bg-primary/20 blur-2xl" />
-              <div className="relative overflow-hidden rounded-3xl border border-primary/30">
-                <img src={portrait.url} alt="Hakizimana Leogad" className="w-full" />
-              </div>
-            </div>
-          </div>
-          <div className="md:col-span-3 space-y-6">
+        <div className="grid gap-12 items-center">
+          <div className="space-y-6">
             <p className="text-lg leading-relaxed text-muted-foreground">
               I'm <span className="text-foreground font-medium">Hakizimana Leogad</span>, an
               Embedded Systems Developer and IoT Engineer based in Kigali, Rwanda. I build

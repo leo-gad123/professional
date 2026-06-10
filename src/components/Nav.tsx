@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import logoAsset from "@/assets/logo.jpg.asset.json";
 
 const links = [
   { to: "/", label: "Home" },
@@ -28,12 +27,8 @@ export function Nav() {
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-2" aria-label="Home">
-          <img
-            src={logoAsset.url}
-            alt="Hakizimana Leogad logo"
-            className="h-10 w-10 rounded-full object-cover ring-1 ring-primary/40 shadow-[0_0_20px_oklch(0.85_0.16_207/0.4)]"
-          />
+        <Link to="/" className="font-serif text-lg text-foreground" aria-label="Home">
+          Leogad
         </Link>
         <ul className="hidden items-center gap-10 md:flex">
           {links.map((l) => (
