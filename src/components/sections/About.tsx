@@ -1,4 +1,3 @@
-
 import { SectionHeading } from "../SectionHeading";
 
 const focus = [
