@@ -1,4 +1,5 @@
 import { SectionHeading } from "../SectionHeading";
+import portraitAsset from "@/assets/portrait.png.asset.json";
 
 const focus = [
   "Embedded Systems Development",
@@ -14,8 +15,19 @@ export function About() {
     <section id="about" className="relative px-6 py-32">
       <div className="mx-auto max-w-6xl">
         <SectionHeading eyebrow="About" title="Who I" accent="Am" />
-        <div className="grid gap-12 items-center">
-          <div className="space-y-6">
+        <div className="grid gap-12 items-center md:grid-cols-5">
+          <div className="md:col-span-2">
+            <div className="relative rounded-2xl overflow-hidden glass">
+              <div className="absolute -inset-4 bg-gradient-to-tr from-primary/30 to-transparent blur-2xl -z-10" />
+              <img
+                src={portraitAsset.url}
+                alt="Portrait of Hakizimana Leogad"
+                className="w-full h-auto object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+          <div className="space-y-6 md:col-span-3">
             <p className="text-lg leading-relaxed text-muted-foreground">
               I'm <span className="text-foreground font-medium">Hakizimana Leogad</span>, an
               Embedded Systems Developer and IoT Engineer based in Kigali, Rwanda. I build
