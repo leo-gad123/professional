@@ -1,5 +1,5 @@
 import { SectionHeading } from "../SectionHeading";
-import portraitAsset from "@/assets/portrait.png.asset.json";
+import portraitAsset from "@/assets/portrait.png";
 
 const focus = [
   "Embedded Systems Development",
@@ -20,7 +20,7 @@ export function About() {
             <div className="relative rounded-2xl overflow-hidden glass">
               <div className="absolute -inset-4 bg-gradient-to-tr from-primary/30 to-transparent blur-2xl -z-10" />
               <img
-                src={portraitAsset.url}
+                src={portraitAsset}
                 alt="Portrait of Hakizimana Leogad"
                 className="w-full h-auto object-cover"
                 loading="lazy"
