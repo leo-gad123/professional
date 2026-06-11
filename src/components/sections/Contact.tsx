@@ -1,20 +1,33 @@
 import { SectionHeading } from "../SectionHeading";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
-const contacts = [
-  { label: "Email", value: "Hakizimana Leogad", href: "mailto:hakizimanaleogad@gmail.com" },
-  { label: "Phone", value: "+250 793 953 775", href: "tel:+250793953775" },
-  { label: "Address", value: "Kigali, Rwanda" },
-];
-
-const socials = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/leogadhakizimana/" },
-  { label: "GitHub", href: "https://github.com/leo-gad123" },
-  { label: "Instagram", href: "https://instagram.com/1eogad" },
-  { label: "Facebook", href: "#" },
-  { label: "Discord", href: "#" },
-];
+const defaults = {
+  email: "hakizimanaleogad@gmail.com",
+  phone: "+250 793 953 775",
+  location: "Kigali, Rwanda",
+  linkedin: "https://www.linkedin.com/in/leogadhakizimana/",
+  github: "https://github.com/leo-gad123",
+};
 
 export function Contact() {
+  const { data } = useSiteSettings();
+  const email = data?.contact_email || defaults.email;
+  const phone = data?.contact_phone || defaults.phone;
+  const location = data?.location || defaults.location;
+
+  const contacts = [
+    { label: "Email", value: email, href: `mailto:${email}` },
+    { label: "Phone", value: phone, href: `tel:${phone.replace(/\s+/g, "")}` },
+    { label: "Address", value: location },
+  ];
+
+  const socials = [
+    { label: "LinkedIn", href: data?.linkedin_url || defaults.linkedin },
+    { label: "GitHub", href: data?.github_url || defaults.github },
+    data?.twitter_url ? { label: "Twitter", href: data.twitter_url } : null,
+    data?.website_url ? { label: "Website", href: data.website_url } : null,
+  ].filter(Boolean) as { label: string; href: string }[];
+
   return (
     <section id="contact" className="relative px-6 py-32">
       <div className="mx-auto max-w-5xl">

@@ -1,16 +1,20 @@
 import { Link } from "@tanstack/react-router";
+import { StatusBadge } from "@/components/StatusBadge";
 
 export function Hero() {
   return (
     <section id="home" className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-24">
       <div className="absolute inset-0 hero-gradient pointer-events-none" />
       <div className="relative mx-auto max-w-5xl text-center">
-        <div className="flex items-center justify-center gap-4 mb-8 animate-float-up">
+        <div className="flex items-center justify-center gap-4 mb-6 animate-float-up">
           <div className="h-px w-12 bg-primary/40" />
           <p className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.3em] text-primary">
             Embedded Systems · IoT Engineer · Arduino
           </p>
           <div className="h-px w-12 bg-primary/40" />
+        </div>
+        <div className="mb-6 flex justify-center animate-float-up" style={{ animationDelay: "0.05s" }}>
+          <StatusBadge />
         </div>
 
         <h1 className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.95] tracking-tight animate-float-up" style={{ animationDelay: "0.1s" }}>
