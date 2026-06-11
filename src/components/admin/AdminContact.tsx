@@ -55,9 +55,16 @@ export function AdminContact() {
     e.preventDefault();
     if (!data) return;
     setSaving(true);
-    const payload = Object.fromEntries(
-      Object.entries(form).map(([k, v]) => [k, v.trim() === "" ? null : v.trim()]),
-    );
+    const norm = (v: string) => (v.trim() === "" ? null : v.trim());
+    const payload = {
+      contact_email: norm(form.contact_email),
+      contact_phone: norm(form.contact_phone),
+      location: norm(form.location),
+      github_url: norm(form.github_url),
+      linkedin_url: norm(form.linkedin_url),
+      twitter_url: norm(form.twitter_url),
+      website_url: norm(form.website_url),
+    };
     const { error } = await supabase.from("site_settings").update(payload).eq("id", data.id);
     setSaving(false);
     if (error) {
