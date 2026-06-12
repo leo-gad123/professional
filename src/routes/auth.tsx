@@ -55,11 +55,11 @@ function AuthPage() {
       toast.error("Enter your email first");
       return;
     }
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth`,
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
     });
     if (error) toast.error(error.message);
-    else toast.success("Password reset email sent");
+    else toast.success("Password reset email sent — check your inbox");
   }
 
   return (
