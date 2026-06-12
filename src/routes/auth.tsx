@@ -19,7 +19,6 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -42,24 +41,25 @@ function AuthPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
-        });
-        if (error) throw error;
-        toast.success("Account created. You can sign in now.");
-        setMode("signin");
-      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Authentication failed");
     } finally {
       setLoading(false);
     }
+  }
+
+  async function handleForgot() {
+    if (!email) {
+      toast.error("Enter your email first");
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+    if (error) toast.error(error.message);
+    else toast.success("Password reset email sent");
   }
 
   return (
@@ -68,9 +68,7 @@ function AuthPage() {
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-4">
           Admin Portal
         </p>
-        <h1 className="font-serif text-3xl mb-6">
-          {mode === "signin" ? "Sign in" : "Create admin account"}
-        </h1>
+        <h1 className="font-serif text-3xl mb-6">Sign in</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -89,7 +87,7 @@ function AuthPage() {
             <Input
               id="password"
               type="password"
-              autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              autoComplete="current-password"
               required
               minLength={6}
               value={password}
@@ -97,23 +95,17 @@ function AuthPage() {
             />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Please wait..." : mode === "signin" ? "Sign in" : "Sign up"}
+            {loading ? "Please wait..." : "Sign in"}
           </Button>
         </form>
 
         <button
           type="button"
-          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+          onClick={handleForgot}
           className="mt-6 text-xs text-muted-foreground hover:text-primary transition-colors w-full text-center"
         >
-          {mode === "signin"
-            ? "Need to create the admin account? Sign up"
-            : "Already have an account? Sign in"}
+          Forgot password?
         </button>
-
-        <p className="mt-6 text-[11px] text-muted-foreground text-center leading-relaxed">
-          The first account you create automatically becomes the site admin.
-        </p>
 
         <div className="mt-6 text-center">
           <Link to="/" className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-primary">
