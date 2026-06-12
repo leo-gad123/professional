@@ -41,7 +41,7 @@ function AuthPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error) throw error;
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Authentication failed");
@@ -79,7 +79,7 @@ function AuthPage() {
               autoComplete="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value.trim())}
             />
           </div>
           <div className="space-y-2">
