@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,19 @@ import { AdminContact } from "@/components/admin/AdminContact";
 import { AdminProjects } from "@/components/admin/AdminProjects";
 
 export const Route = createFileRoute("/_authenticated/admin")({
+  ssr: false,
+  beforeLoad: async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    if (!userId) throw redirect({ to: "/auth" });
+    const { data: role } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (!role) throw redirect({ to: "/" });
+  },
   head: () => ({
     meta: [
       { title: "Admin — Hakizimana Leogad" },
