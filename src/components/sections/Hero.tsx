@@ -18,6 +18,17 @@ export function Hero() {
           <StatusBadge />
         </div>
 
+        <div className="mb-8 flex justify-center animate-float-up" style={{ animationDelay: "0.08s" }}>
+          <div className="relative">
+            <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-primary/60 to-primary/20 blur-md" />
+            <img
+              src={portraitAsset.url}
+              alt="Hakizimana Leogad"
+              className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover border-2 border-primary/30"
+            />
+          </div>
+        </div>
+
         <h1 className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.95] tracking-tight animate-float-up" style={{ animationDelay: "0.1s" }}>
           <span className="block text-foreground">Hakizimana</span>
           <span className="block italic text-primary glow-text">Leogad</span>
