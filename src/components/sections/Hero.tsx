@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { StatusBadge } from "@/components/StatusBadge";
-import portraitAsset from "@/assets/portrait.png.asset.json";
+import portraitUrl from "@/assets/portrait.png";
 
 export function Hero() {
   return (
