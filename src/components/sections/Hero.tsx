@@ -53,6 +53,7 @@ export function Hero() {
           </Link>
           <a
             href="/cv.pdf"
+            download="Hakizimana-Leogad-CV.pdf"
             className="inline-flex items-center gap-2 rounded-full border border-primary/40 px-7 py-3 font-mono text-xs uppercase tracking-[0.2em] text-primary transition-all hover:bg-primary/10"
           >
             Download CV
