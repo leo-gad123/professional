@@ -22,7 +22,7 @@ export function Hero() {
           <div className="relative">
             <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-primary/60 to-primary/20 blur-lg" />
             <img
-              src={portraitAsset.url}
+              src={portraitUrl}
               alt="Hakizimana Leogad"
               className="relative w-40 h-40 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-full object-cover border-2 border-primary/30"
             />
