@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export function Counter({ end, suffix = "" }: { end: number; suffix?: string }) {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(end);
   const ref = useRef<HTMLSpanElement>(null);
   const started = useRef(false);
 
@@ -11,6 +11,8 @@ export function Counter({ end, suffix = "" }: { end: number; suffix?: string }) 
     const obs = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && !started.current) {
         started.current = true;
+        // Reset to 0 in the client just before animating so SSR shows the final value
+        setValue(0);
         const duration = 1800;
         const start = performance.now();
         const tick = (now: number) => {

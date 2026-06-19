@@ -101,6 +101,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
       },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: "Hakizimana Leogad",
+          jobTitle: "Embedded Systems & IoT Engineer",
+          url: "https://prof.hakizimanaleogad.workers.dev/",
+          address: "Kigali, Rwanda",
+          knowsAbout: ["Embedded Systems", "IoT", "Arduino", "Electronics", "Automation"],
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
