@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/api";
 
 export type SiteSettings = {
-  id: string;
+  _id: string;
   availability: "available" | "busy" | "unavailable";
   status_message: string;
   contact_email: string | null;
@@ -17,15 +17,7 @@ export type SiteSettings = {
 export function useSiteSettings() {
   return useQuery({
     queryKey: ["site_settings"],
-    queryFn: async (): Promise<SiteSettings | null> => {
-      const { data, error } = await supabase
-        .from("site_settings")
-        .select("*")
-        .limit(1)
-        .maybeSingle();
-      if (error) throw error;
-      return data as SiteSettings | null;
-    },
+    queryFn: (): Promise<SiteSettings | null> => api.getSiteSettings(),
     staleTime: 60_000,
   });
 }
@@ -33,16 +25,7 @@ export function useSiteSettings() {
 export function useProjectsList() {
   return useQuery({
     queryKey: ["projects", "published"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .eq("is_published", true)
-        .order("sort_order", { ascending: true })
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: () => api.getPublishedProjects(),
     staleTime: 60_000,
   });
 }

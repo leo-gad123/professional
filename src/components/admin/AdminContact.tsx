@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/api";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { Save } from "lucide-react";
 
 type ContactState = {
   contact_email: string;
@@ -65,14 +66,15 @@ export function AdminContact() {
       twitter_url: norm(form.twitter_url),
       website_url: norm(form.website_url),
     };
-    const { error } = await supabase.from("site_settings").update(payload).eq("id", data.id);
-    setSaving(false);
-    if (error) {
-      toast.error(error.message);
-      return;
+    try {
+      await api.updateSiteSettings(payload);
+      toast.success("Contact info updated");
+      qc.invalidateQueries({ queryKey: ["site_settings"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Save failed");
+    } finally {
+      setSaving(false);
     }
-    toast.success("Contact info updated");
-    qc.invalidateQueries({ queryKey: ["site_settings"] });
   }
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
@@ -88,7 +90,7 @@ export function AdminContact() {
   ];
 
   return (
-    <form onSubmit={handleSave} className="glass rounded-2xl p-6 space-y-5 max-w-2xl">
+    <form onSubmit={handleSave} className="bg-card rounded-2xl p-6 space-y-5 max-w-2xl card-shadow border border-border">
       <div className="grid gap-4 md:grid-cols-2">
         {fields.map((f) => (
           <div key={f.key} className="space-y-2">
@@ -104,7 +106,8 @@ export function AdminContact() {
           </div>
         ))}
       </div>
-      <Button type="submit" disabled={saving}>
+      <Button type="submit" disabled={saving} className="btn-gradient border-0">
+        <Save className="h-4 w-4 mr-1.5" />
         {saving ? "Saving…" : "Save contact info"}
       </Button>
     </form>

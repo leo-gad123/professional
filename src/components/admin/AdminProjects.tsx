@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { api } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { Pencil, Trash2, Plus } from "lucide-react";
 
 type Project = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   tags: string[];
@@ -48,15 +48,7 @@ export function AdminProjects() {
   const qc = useQueryClient();
   const { data: projects, isLoading } = useQuery({
     queryKey: ["projects", "admin"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .order("sort_order", { ascending: true })
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return (data ?? []) as Project[];
-    },
+    queryFn: () => api.getAdminProjects(),
   });
 
   const [open, setOpen] = useState(false);
@@ -103,52 +95,52 @@ export function AdminProjects() {
       sort_order: Number(form.sort_order) || 0,
       is_published: form.is_published,
     };
-    let error;
-    if (editing) {
-      ({ error } = await supabase.from("projects").update(payload).eq("id", editing.id));
-    } else {
-      ({ error } = await supabase.from("projects").insert(payload));
+    try {
+      if (editing) {
+        await api.updateProject(editing._id, payload);
+      } else {
+        await api.createProject(payload);
+      }
+      toast.success(editing ? "Project updated" : "Project added");
+      setOpen(false);
+      qc.invalidateQueries({ queryKey: ["projects"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Save failed");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-    toast.success(editing ? "Project updated" : "Project added");
-    setOpen(false);
-    qc.invalidateQueries({ queryKey: ["projects"] });
   }
 
   async function handleDelete(p: Project) {
     if (!confirm(`Delete "${p.title}"?`)) return;
-    const { error } = await supabase.from("projects").delete().eq("id", p.id);
-    if (error) {
-      toast.error(error.message);
-      return;
+    try {
+      await api.deleteProject(p._id);
+      toast.success("Project deleted");
+      qc.invalidateQueries({ queryKey: ["projects"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Delete failed");
     }
-    toast.success("Project deleted");
-    qc.invalidateQueries({ queryKey: ["projects"] });
   }
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <p className="text-sm text-muted-foreground">
-          {isLoading ? "Loading…" : `${projects?.length ?? 0} project(s)`}
+          {isLoading ? "Loading…" : `${(projects as Project[] | undefined)?.length ?? 0} project(s)`}
         </p>
-        <Button onClick={openNew}>
+        <Button onClick={openNew} className="btn-gradient border-0">
           <Plus className="h-4 w-4 mr-1" /> New project
         </Button>
       </div>
 
       <div className="grid gap-3">
-        {projects?.map((p) => (
-          <div key={p.id} className="glass rounded-xl p-4 flex items-start justify-between gap-4">
+        {(projects as Project[] | undefined)?.map((p) => (
+          <div key={p._id} className="bg-card rounded-xl p-4 flex items-start justify-between gap-4 card-shadow border border-border">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-serif text-lg truncate">{p.title}</h3>
+                <h3 className="font-serif text-lg font-medium text-foreground truncate">{p.title}</h3>
                 {!p.is_published && (
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground border border-border rounded px-2 py-0.5">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-secondary rounded px-2 py-0.5">
                     Hidden
                   </span>
                 )}
@@ -157,7 +149,7 @@ export function AdminProjects() {
               {p.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
                   {p.tags.map((t) => (
-                    <span key={t} className="text-[10px] font-mono uppercase text-primary/80 border border-primary/30 rounded-full px-2 py-0.5">
+                    <span key={t} className="text-[10px] font-mono uppercase text-primary bg-primary/5 rounded-full px-2 py-0.5 font-medium">
                       {t}
                     </span>
                   ))}
@@ -174,8 +166,8 @@ export function AdminProjects() {
             </div>
           </div>
         ))}
-        {!isLoading && (projects?.length ?? 0) === 0 && (
-          <div className="glass rounded-xl p-8 text-center text-sm text-muted-foreground">
+        {!isLoading && (projects as Project[] | undefined)?.length === 0 && (
+          <div className="bg-card rounded-xl p-8 text-center text-sm text-muted-foreground card-shadow border border-border">
             No projects yet. Click "New project" to add your first one.
           </div>
         )}
@@ -184,7 +176,7 @@ export function AdminProjects() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editing ? "Edit project" : "New project"}</DialogTitle>
+            <DialogTitle className="font-serif text-xl">{editing ? "Edit project" : "New project"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSave} className="space-y-4">
             <div className="space-y-2">
@@ -266,7 +258,7 @@ export function AdminProjects() {
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={saving || !form.title.trim()}>
+              <Button type="submit" disabled={saving || !form.title.trim()} className="btn-gradient border-0">
                 {saving ? "Saving…" : editing ? "Save changes" : "Add project"}
               </Button>
             </DialogFooter>

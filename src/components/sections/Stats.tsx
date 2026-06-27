@@ -1,3 +1,4 @@
+import { Reveal } from "../Reveal";
 import { Counter } from "../Counter";
 
 const stats = [
@@ -9,14 +10,14 @@ const stats = [
 
 export function Stats() {
   return (
-    <section className="relative px-6 py-24">
-      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 md:grid-cols-4">
+    <section className="section-alt relative px-4 sm:px-6 py-16 md:py-20">
+      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-5 md:grid-cols-4 stagger-children">
         {stats.map((s) => (
-          <div key={s.label} className="glass rounded-2xl p-8 text-center glass-hover">
-            <div className="font-serif text-5xl md:text-6xl text-primary glow-text">
+          <div key={s.label} className="bg-card rounded-2xl p-8 text-center card-shadow">
+            <div className="font-serif text-4xl md:text-5xl font-medium text-gradient">
               <Counter end={s.value} suffix={s.suffix} />
             </div>
-            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               {s.label}
             </p>
           </div>

@@ -1,9 +1,10 @@
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { Circle } from "lucide-react";
 
 const styles = {
-  available: { dot: "bg-emerald-400", text: "text-emerald-300", ring: "ring-emerald-400/30" },
-  busy: { dot: "bg-amber-400", text: "text-amber-300", ring: "ring-amber-400/30" },
-  unavailable: { dot: "bg-rose-400", text: "text-rose-300", ring: "ring-rose-400/30" },
+  available: { dot: "text-emerald-500", container: "bg-emerald-50 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800/40" },
+  busy: { dot: "text-amber-500", container: "bg-amber-50 border-amber-200 dark:bg-amber-950/30 dark:border-amber-800/40" },
+  unavailable: { dot: "text-rose-500", container: "bg-rose-50 border-rose-200 dark:bg-rose-950/30 dark:border-rose-800/40" },
 } as const;
 
 export function StatusBadge() {
@@ -13,12 +14,9 @@ export function StatusBadge() {
   const s = styles[availability];
 
   return (
-    <div className={`inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 ring-1 ${s.ring}`}>
-      <span className="relative flex h-2 w-2">
-        <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${s.dot}`} />
-        <span className={`relative inline-flex rounded-full h-2 w-2 ${s.dot}`} />
-      </span>
-      <span className={`font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] ${s.text}`}>
+    <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 border ${s.container}`}>
+      <Circle className={`h-2.5 w-2.5 fill-current animate-pulse-dot ${s.dot}`} />
+      <span className={`font-mono text-[11px] uppercase tracking-[0.15em] font-medium ${s.dot}`}>
         {message}
       </span>
     </div>

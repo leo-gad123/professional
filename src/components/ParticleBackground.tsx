@@ -33,6 +33,7 @@ export function ParticleBackground() {
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = document.documentElement.classList.contains("dark");
       // particles
       for (const p of particles) {
         p.x += p.vx; p.y += p.vy;
@@ -40,7 +41,7 @@ export function ParticleBackground() {
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(0, 229, 255, 0.7)";
+        ctx.fillStyle = isDark ? "rgba(52, 211, 153, 0.5)" : "rgba(5, 150, 105, 0.4)";
         ctx.fill();
       }
       // connections
@@ -53,7 +54,9 @@ export function ParticleBackground() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 229, 255, ${0.15 * (1 - d / 130)})`;
+            ctx.strokeStyle = isDark
+              ? `rgba(52, 211, 153, ${0.1 * (1 - d / 130)})`
+              : `rgba(5, 150, 105, ${0.08 * (1 - d / 130)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
