@@ -37,7 +37,10 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12" style={{ background: "var(--background)" }}>
+    <section
+      className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12"
+      style={{ background: "var(--background)" }}
+    >
       <div className="w-full max-w-md">
         <div className="bg-card rounded-2xl p-5 sm:p-8 card-shadow border border-border">
           <div className="flex items-center gap-3 mb-6">
@@ -95,7 +98,10 @@ export default function ResetPasswordPage() {
         </div>
 
         <div className="mt-6 text-center">
-          <Link to="/auth" className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            to="/auth"
+            className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-primary transition-colors"
+          >
             <ArrowLeft className="h-3 w-3" />
             Back to sign in
           </Link>

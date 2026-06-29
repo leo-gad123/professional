@@ -41,7 +41,8 @@ export function Nav() {
                 <Link
                   to={l.to}
                   className={`font-mono text-[11px] uppercase tracking-[0.2em] transition-colors hover:text-primary ${
-                    location.pathname === l.to || (l.to !== "/" && location.pathname.startsWith(l.to))
+                    location.pathname === l.to ||
+                    (l.to !== "/" && location.pathname.startsWith(l.to))
                       ? "text-primary font-medium"
                       : "text-muted-foreground"
                   }`}
@@ -63,11 +64,7 @@ export function Nav() {
             className="md:hidden flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground hover:text-primary hover:border-primary transition-colors"
             aria-label="Menu"
           >
-            {open ? (
-              <X className="h-4 w-4" />
-            ) : (
-              <Menu className="h-4 w-4" />
-            )}
+            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
       </nav>

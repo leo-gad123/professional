@@ -38,7 +38,10 @@ export function About() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 stagger-children">
               {focus.map((f) => (
-                <div key={f} className="flex items-center gap-3 rounded-xl bg-secondary/60 px-4 py-3">
+                <div
+                  key={f}
+                  className="flex items-center gap-3 rounded-xl bg-secondary/60 px-4 py-3"
+                >
                   <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
                   <span className="text-sm text-foreground">{f}</span>
                 </div>

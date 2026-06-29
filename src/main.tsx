@@ -10,12 +10,20 @@ function ready() {
   const elapsed = performance.now() - start;
   const remaining = MIN_LOAD_MS - elapsed;
   if (remaining > 0) {
-    setTimeout(() => createRoot(document.getElementById("root")!).render(
-      <StrictMode><App /></StrictMode>,
-    ), remaining);
+    setTimeout(
+      () =>
+        createRoot(document.getElementById("root")!).render(
+          <StrictMode>
+            <App />
+          </StrictMode>,
+        ),
+      remaining,
+    );
   } else {
     createRoot(document.getElementById("root")!).render(
-      <StrictMode><App /></StrictMode>,
+      <StrictMode>
+        <App />
+      </StrictMode>,
     );
   }
 }

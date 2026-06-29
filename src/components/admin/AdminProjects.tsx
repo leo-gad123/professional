@@ -6,7 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Pencil, Trash2, Plus } from "lucide-react";
 
@@ -88,7 +94,10 @@ export function AdminProjects() {
     const payload = {
       title: form.title.trim(),
       description: form.description.trim(),
-      tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
+      tags: form.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
       image_url: form.image_url.trim() || null,
       project_url: form.project_url.trim() || null,
       repo_url: form.repo_url.trim() || null,
@@ -126,7 +135,9 @@ export function AdminProjects() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <p className="text-sm text-muted-foreground">
-          {isLoading ? "Loading…" : `${(projects as Project[] | undefined)?.length ?? 0} project(s)`}
+          {isLoading
+            ? "Loading…"
+            : `${(projects as Project[] | undefined)?.length ?? 0} project(s)`}
         </p>
         <Button onClick={openNew} className="btn-gradient border-0">
           <Plus className="h-4 w-4 mr-1" /> New project
@@ -135,10 +146,15 @@ export function AdminProjects() {
 
       <div className="grid gap-3">
         {(projects as Project[] | undefined)?.map((p) => (
-          <div key={p._id} className="bg-card rounded-xl p-4 flex items-start justify-between gap-4 card-shadow border border-border">
+          <div
+            key={p._id}
+            className="bg-card rounded-xl p-4 flex items-start justify-between gap-4 card-shadow border border-border"
+          >
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-serif text-lg font-medium text-foreground truncate">{p.title}</h3>
+                <h3 className="font-serif text-lg font-medium text-foreground truncate">
+                  {p.title}
+                </h3>
                 {!p.is_published && (
                   <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-secondary rounded px-2 py-0.5">
                     Hidden
@@ -149,7 +165,10 @@ export function AdminProjects() {
               {p.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
                   {p.tags.map((t) => (
-                    <span key={t} className="text-[10px] font-mono uppercase text-primary bg-primary/5 rounded-full px-2 py-0.5 font-medium">
+                    <span
+                      key={t}
+                      className="text-[10px] font-mono uppercase text-primary bg-primary/5 rounded-full px-2 py-0.5 font-medium"
+                    >
                       {t}
                     </span>
                   ))}
@@ -160,7 +179,12 @@ export function AdminProjects() {
               <Button size="icon" variant="outline" onClick={() => openEdit(p)} aria-label="Edit">
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button size="icon" variant="outline" onClick={() => handleDelete(p)} aria-label="Delete">
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => handleDelete(p)}
+                aria-label="Delete"
+              >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
@@ -176,7 +200,9 @@ export function AdminProjects() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="font-serif text-xl">{editing ? "Edit project" : "New project"}</DialogTitle>
+            <DialogTitle className="font-serif text-xl">
+              {editing ? "Edit project" : "New project"}
+            </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSave} className="space-y-4">
             <div className="space-y-2">
@@ -258,7 +284,11 @@ export function AdminProjects() {
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={saving || !form.title.trim()} className="btn-gradient border-0">
+              <Button
+                type="submit"
+                disabled={saving || !form.title.trim()}
+                className="btn-gradient border-0"
+              >
                 {saving ? "Saving…" : editing ? "Save changes" : "Add project"}
               </Button>
             </DialogFooter>

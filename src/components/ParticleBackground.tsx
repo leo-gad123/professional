@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
 
 interface Particle {
-  x: number; y: number; vx: number; vy: number; r: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  r: number;
 }
 
 export function ParticleBackground() {
@@ -36,7 +40,8 @@ export function ParticleBackground() {
       const isDark = document.documentElement.classList.contains("dark");
       // particles
       for (const p of particles) {
-        p.x += p.vx; p.y += p.vy;
+        p.x += p.vx;
+        p.y += p.vy;
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
         ctx.beginPath();

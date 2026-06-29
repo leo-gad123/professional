@@ -25,7 +25,9 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
         if (mounted) setChecking(false);
       }
     })();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [navigate]);
 
   if (checking) {

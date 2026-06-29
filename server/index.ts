@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import path from "node:path";
+import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { connectDB } from "./db.js";
 import authRoutes from "./routes/auth.js";
@@ -21,13 +22,23 @@ app.use("/api/projects", projectsRoutes);
 app.use("/api/site-settings", siteSettingsRoutes);
 
 const distPath = path.resolve(__dirname, "..", "dist");
+const indexHtml = path.join(distPath, "index.html");
 app.use(express.static(distPath));
-app.use((req, res) => {
+app.use((req, res, next) => {
   if (req.method === "GET" && !req.path.startsWith("/api")) {
-    res.sendFile(path.join(distPath, "index.html"));
+    if (fs.existsSync(indexHtml)) {
+      res.sendFile(indexHtml);
+    } else {
+      next();
+    }
   } else {
     res.status(404).json({ error: "Not found" });
   }
+});
+
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ error: "Internal server error" });
 });
 
 async function start() {

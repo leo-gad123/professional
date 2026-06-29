@@ -79,18 +79,22 @@ export function AdminContact() {
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
 
-  const fields: { key: keyof ContactState; label: string; type?: string; placeholder?: string }[] = [
-    { key: "contact_email", label: "Email", type: "email", placeholder: "you@example.com" },
-    { key: "contact_phone", label: "Phone", placeholder: "+250 793 953 775" },
-    { key: "location", label: "Location", placeholder: "Kigali, Rwanda" },
-    { key: "github_url", label: "GitHub URL", type: "url" },
-    { key: "linkedin_url", label: "LinkedIn URL", type: "url" },
-    { key: "twitter_url", label: "Twitter / X URL", type: "url" },
-    { key: "website_url", label: "Website URL", type: "url" },
-  ];
+  const fields: { key: keyof ContactState; label: string; type?: string; placeholder?: string }[] =
+    [
+      { key: "contact_email", label: "Email", type: "email", placeholder: "you@example.com" },
+      { key: "contact_phone", label: "Phone", placeholder: "+250 793 953 775" },
+      { key: "location", label: "Location", placeholder: "Kigali, Rwanda" },
+      { key: "github_url", label: "GitHub URL", type: "url" },
+      { key: "linkedin_url", label: "LinkedIn URL", type: "url" },
+      { key: "twitter_url", label: "Twitter / X URL", type: "url" },
+      { key: "website_url", label: "Website URL", type: "url" },
+    ];
 
   return (
-    <form onSubmit={handleSave} className="bg-card rounded-2xl p-6 space-y-5 max-w-2xl card-shadow border border-border">
+    <form
+      onSubmit={handleSave}
+      className="bg-card rounded-2xl p-6 space-y-5 max-w-2xl card-shadow border border-border"
+    >
       <div className="grid gap-4 md:grid-cols-2">
         {fields.map((f) => (
           <div key={f.key} className="space-y-2">

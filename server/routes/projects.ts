@@ -18,9 +18,7 @@ router.get("/", async (_req, res) => {
 
 router.get("/admin", requireAuth, async (_req, res) => {
   try {
-    const projects = await Project.find()
-      .sort({ sort_order: 1, createdAt: -1 })
-      .lean();
+    const projects = await Project.find().sort({ sort_order: 1, createdAt: -1 }).lean();
     res.json(projects);
   } catch (err) {
     console.error(err);

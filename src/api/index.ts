@@ -28,8 +28,7 @@ export const api = {
     request<any>("/projects", { method: "POST", body: JSON.stringify(data) }),
   updateProject: (id: string, data: Record<string, unknown>) =>
     request<any>(`/projects/${id}`, { method: "PUT", body: JSON.stringify(data) }),
-  deleteProject: (id: string) =>
-    request<any>(`/projects/${id}`, { method: "DELETE" }),
+  deleteProject: (id: string) => request<any>(`/projects/${id}`, { method: "DELETE" }),
 
   // Auth
   login: (email: string, password: string) =>

@@ -14,7 +14,10 @@ export default function AdminPage() {
   const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    api.getMe().then((u) => setEmail(u.email)).catch(() => navigate("/auth"));
+    api
+      .getMe()
+      .then((u) => setEmail(u.email))
+      .catch(() => navigate("/auth"));
   }, [navigate]);
 
   async function handleSignOut() {
@@ -24,7 +27,10 @@ export default function AdminPage() {
   }
 
   return (
-    <section className="min-h-screen px-4 sm:px-6 pt-24 sm:pt-28 pb-12 sm:pb-16" style={{ background: "var(--background)" }}>
+    <section
+      className="min-h-screen px-4 sm:px-6 pt-24 sm:pt-28 pb-12 sm:pb-16"
+      style={{ background: "var(--background)" }}
+    >
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-8 sm:mb-10">
           <div>
@@ -39,11 +45,13 @@ export default function AdminPage() {
             <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-medium text-foreground">
               Manage your <span className="text-gradient">site</span>
             </h1>
-            <p className="text-sm text-muted-foreground mt-2">
-              Signed in as {email || "…"}
-            </p>
+            <p className="text-sm text-muted-foreground mt-2">Signed in as {email || "…"}</p>
           </div>
-          <Button variant="outline" onClick={handleSignOut} className="btn-ghost self-start sm:self-auto">
+          <Button
+            variant="outline"
+            onClick={handleSignOut}
+            className="btn-ghost self-start sm:self-auto"
+          >
             <LogOut className="h-4 w-4 mr-1.5" />
             Sign out
           </Button>
@@ -51,9 +59,15 @@ export default function AdminPage() {
 
         <Tabs defaultValue="status" className="w-full">
           <TabsList className="mb-6 bg-secondary/80 rounded-xl p-1 w-full overflow-x-auto flex-nowrap">
-            <TabsTrigger value="status" className="flex-1 whitespace-nowrap">Status</TabsTrigger>
-            <TabsTrigger value="contact" className="flex-1 whitespace-nowrap">Contact</TabsTrigger>
-            <TabsTrigger value="projects" className="flex-1 whitespace-nowrap">Projects</TabsTrigger>
+            <TabsTrigger value="status" className="flex-1 whitespace-nowrap">
+              Status
+            </TabsTrigger>
+            <TabsTrigger value="contact" className="flex-1 whitespace-nowrap">
+              Contact
+            </TabsTrigger>
+            <TabsTrigger value="projects" className="flex-1 whitespace-nowrap">
+              Projects
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="status">
             <AdminStatus />

@@ -4,9 +4,33 @@ import { useProjectsList } from "@/hooks/useSiteSettings";
 import { ExternalLink, Github } from "lucide-react";
 
 const fallback = [
-  { _id: "f1", title: "AI Smart Agriculture System", description: "Crop disease detection + automatic irrigation.", tags: ["AI", "IoT", "Sensors"], image_url: null, project_url: null, repo_url: null },
-  { _id: "f2", title: "Autonomous Delivery Robot", description: "GPS navigation, obstacle avoidance & AI vision.", tags: ["Robotics", "Vision", "GPS"], image_url: null, project_url: null, repo_url: null },
-  { _id: "f3", title: "Smart Traffic Control System", description: "AI vehicle detection and adaptive traffic lights.", tags: ["AI", "Embedded"], image_url: null, project_url: null, repo_url: null },
+  {
+    _id: "f1",
+    title: "AI Smart Agriculture System",
+    description: "Crop disease detection + automatic irrigation.",
+    tags: ["AI", "IoT", "Sensors"],
+    image_url: null,
+    project_url: null,
+    repo_url: null,
+  },
+  {
+    _id: "f2",
+    title: "Autonomous Delivery Robot",
+    description: "GPS navigation, obstacle avoidance & AI vision.",
+    tags: ["Robotics", "Vision", "GPS"],
+    image_url: null,
+    project_url: null,
+    repo_url: null,
+  },
+  {
+    _id: "f3",
+    title: "Smart Traffic Control System",
+    description: "AI vehicle detection and adaptive traffic lights.",
+    tags: ["AI", "Embedded"],
+    image_url: null,
+    project_url: null,
+    repo_url: null,
+  },
 ];
 
 export function Projects() {
@@ -44,7 +68,9 @@ export function Projects() {
                 <h3 className="relative font-serif text-xl leading-tight mb-2.5 text-foreground group-hover:text-primary transition-colors">
                   {p.title}
                 </h3>
-                <p className="relative text-sm text-muted-foreground leading-relaxed mb-5">{p.description}</p>
+                <p className="relative text-sm text-muted-foreground leading-relaxed mb-5">
+                  {p.description}
+                </p>
                 <div className="relative flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap gap-1.5">
                     {p.tags.map((t: string) => (

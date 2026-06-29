@@ -1,6 +1,14 @@
 import { Reveal } from "./Reveal";
 
-export function SectionHeading({ eyebrow, title, accent }: { eyebrow: string; title: string; accent?: string }) {
+export function SectionHeading({
+  eyebrow,
+  title,
+  accent,
+}: {
+  eyebrow: string;
+  title: string;
+  accent?: string;
+}) {
   return (
     <Reveal className="mb-14 text-center">
       <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary font-medium mb-3">

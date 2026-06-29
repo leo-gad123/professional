@@ -9,7 +9,14 @@ type Props = {
   once?: boolean;
 };
 
-export function Reveal({ children, className = "", delay = 0, y = 24, duration = 0.6, once = true }: Props) {
+export function Reveal({
+  children,
+  className = "",
+  delay = 0,
+  y = 24,
+  duration = 0.6,
+  once = true,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,11 +40,15 @@ export function Reveal({ children, className = "", delay = 0, y = 24, duration =
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, [delay, y, duration, once]);
 
-  return <div ref={ref} className={className}>{children}</div>;
+  return (
+    <div ref={ref} className={className}>
+      {children}
+    </div>
+  );
 }

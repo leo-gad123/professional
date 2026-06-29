@@ -9,6 +9,9 @@ export async function connectDB() {
     dbConnected = true;
     console.log("MongoDB connected");
   } catch (err) {
-    console.error("MongoDB unavailable — API endpoints requiring DB will return errors:", (err as Error).message);
+    console.error(
+      "MongoDB unavailable — API endpoints requiring DB will return errors:",
+      (err as Error).message,
+    );
   }
 }

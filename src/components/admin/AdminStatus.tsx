@@ -5,7 +5,13 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { Save } from "lucide-react";
 
@@ -47,7 +53,10 @@ export function AdminStatus() {
   if (isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
 
   return (
-    <form onSubmit={handleSave} className="bg-card rounded-2xl p-6 space-y-5 max-w-xl card-shadow border border-border">
+    <form
+      onSubmit={handleSave}
+      className="bg-card rounded-2xl p-6 space-y-5 max-w-xl card-shadow border border-border"
+    >
       <div className="space-y-2">
         <Label>Availability</Label>
         <Select value={availability} onValueChange={setAvailability}>

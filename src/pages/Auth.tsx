@@ -35,12 +35,19 @@ export default function AuthPage() {
   }
 
   return (
-    <section className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12" style={{ background: "var(--background)" }}>
+    <section
+      className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12"
+      style={{ background: "var(--background)" }}
+    >
       <div className="w-full max-w-md">
         <div className="bg-card rounded-2xl p-5 sm:p-8 card-shadow border border-border">
           <div className="flex items-center gap-3 mb-6">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-              {mode === "login" ? <LogIn className="h-5 w-5 text-primary" /> : <UserPlus className="h-5 w-5 text-primary" />}
+              {mode === "login" ? (
+                <LogIn className="h-5 w-5 text-primary" />
+              ) : (
+                <UserPlus className="h-5 w-5 text-primary" />
+              )}
             </div>
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary font-medium">
@@ -93,7 +100,10 @@ export default function AuthPage() {
         </div>
 
         <div className="mt-6 text-center">
-          <Link to="/" className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-primary transition-colors"
+          >
             <ArrowLeft className="h-3 w-3" />
             Back to site
           </Link>
