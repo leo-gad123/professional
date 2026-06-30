@@ -2,7 +2,8 @@ import { Component, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
-import { ParticleBackground } from "@/components/ParticleBackground";
+import { GlowingOrbs } from "@/components/GlowingOrbs";
+import { FloatingTerminal } from "@/components/FloatingTerminal";
 import { Nav } from "@/components/Nav";
 import { Toaster } from "@/components/ui/sonner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -71,8 +72,9 @@ function NotFound() {
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
-      <ParticleBackground />
+      <GlowingOrbs />
       <Nav />
+      <FloatingTerminal />
       <main>{children}</main>
     </div>
   );
