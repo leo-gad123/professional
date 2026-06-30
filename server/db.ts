@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
 
-export let dbConnected = false;
+let cachedConnection: typeof mongoose | null = null;
 
 export async function connectDB() {
+  if (cachedConnection) {
+    return cachedConnection;
+  }
   const uri = process.env.MONGODB_URI || "mongodb://portfolio";
   try {
     await mongoose.connect(uri);
-    dbConnected = true;
+    cachedConnection = mongoose;
     console.log("MongoDB connected");
   } catch (err) {
     console.error(

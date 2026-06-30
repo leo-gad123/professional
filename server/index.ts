@@ -56,11 +56,16 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ error: "Internal server error" });
 });
 
-async function start() {
-  await connectDB();
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+// Only listen when run directly (not on Vercel serverless)
+const isVercel = process.env.VERCEL === "1";
+if (!isVercel) {
+  async function start() {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  }
+  start();
 }
 
-start();
+export default app;
