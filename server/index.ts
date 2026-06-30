@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import mongoose from "mongoose";
 import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -30,9 +31,27 @@ app.use((req, _res, next) => {
   next();
 });
 
+let dbPromise: ReturnType<typeof connectDB> | null = null;
+
+app.use(async (_req, _res, next) => {
+  if (!dbPromise) {
+    dbPromise = connectDB();
+  }
+  await dbPromise;
+  next();
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectsRoutes);
 app.use("/api/site-settings", siteSettingsRoutes);
+
+app.get("/api/db-status", (_req, res) => {
+  res.json({
+    connected: mongoose.connection.readyState === 1,
+    readyState: mongoose.connection.readyState,
+    host: mongoose.connection.host || null,
+  });
+});
 
 const distPath = path.resolve(__dirname, "..", "dist");
 const indexHtml = path.join(distPath, "index.html");
