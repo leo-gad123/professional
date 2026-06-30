@@ -41,17 +41,17 @@
           sans-serif;
       }
       .loading-logo {
-        width: 64px;
-        height: 64px;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
         border: 2px solid rgba(52, 211, 153, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        font-weight: 700;
-        color: #34d399;
+        overflow: hidden;
         margin-bottom: 24px;
+      }
+      .loading-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
       .loading-name {
         font-size: 18px;
@@ -99,7 +99,7 @@
   <body>
     <div id="root">
       <div class="loading-splash">
-        <div class="loading-logo">LG</div>
+        <div class="loading-logo"><img src="/portrait.png" alt="LG" /></div>
         <div class="loading-name">Hakizimana Leogad</div>
         <div class="loading-sub">Embedded Systems & IoT Engineer</div>
         <div class="loading-dots">

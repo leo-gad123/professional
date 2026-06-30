@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export let dbConnected = false;
 
 export async function connectDB() {
-  const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/portfolio";
+  const uri = process.env.MONGODB_URI || "mongodb://portfolio";
   try {
     await mongoose.connect(uri);
     dbConnected = true;
