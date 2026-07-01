@@ -10,7 +10,15 @@ export function GlowingOrbs() {
     if (!ctx) return;
 
     let raf = 0;
-    const orbs: { x: number; y: number; r: number; dx: number; dy: number; hue: number; alpha: number }[] = [];
+    const orbs: {
+      x: number;
+      y: number;
+      r: number;
+      dx: number;
+      dy: number;
+      hue: number;
+      alpha: number;
+    }[] = [];
 
     const resize = () => {
       canvas.width = window.innerWidth;

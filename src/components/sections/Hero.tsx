@@ -21,10 +21,7 @@ const typingText = "Embedded Systems & IoT Engineer";
 
 export function Hero() {
   return (
-    <section
-      id="home"
-      className="relative min-h-screen overflow-hidden pt-20"
-    >
+    <section id="home" className="relative min-h-screen overflow-hidden pt-20">
       <div className="absolute inset-0 grid-pattern opacity-30 pointer-events-none" />
       <div className="absolute inset-0 bg-noise pointer-events-none" />
       <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-emerald-500/5 blur-[120px] animate-blob pointer-events-none" />
@@ -60,7 +57,10 @@ export function Hero() {
             </h1>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="flex items-center gap-2 font-mono text-sm text-muted-foreground">
+          <motion.div
+            variants={itemVariants}
+            className="flex items-center gap-2 font-mono text-sm text-muted-foreground"
+          >
             <Code2 className="h-4 w-4 text-emerald-400" />
             <span className="text-emerald-400">$</span>
             <span className="typewriter-text">{typingText}</span>
@@ -141,7 +141,7 @@ export function Hero() {
                 <span className="text-gray-500">const</span>
                 <span className="text-emerald-400">engineer</span>
                 <span className="text-gray-500">=</span>
-                <span className="text-blue-400">{'{'}</span>
+                <span className="text-blue-400">{"{"}</span>
               </div>
               <div className="ml-4 font-mono text-[10px]">
                 <span className="text-gray-500">status:</span>
@@ -152,7 +152,7 @@ export function Hero() {
                 <span className="text-emerald-300"> "innovation"</span>
               </div>
               <div className="font-mono text-[10px]">
-                <span className="text-blue-400">{'}'}</span>
+                <span className="text-blue-400">{"}"}</span>
                 <span className="text-gray-500">;</span>
               </div>
             </div>

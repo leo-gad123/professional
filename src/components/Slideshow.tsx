@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import suteUrl from "@/assets/sute.png";
 import portraitUrl from "@/assets/portrait.png";
 
 const images = [
-  { src: suteUrl, alt: "Leogad Sute" },
-  { src: portraitUrl, alt: "Hakizimana Leogad" },
+  { src: portraitUrl, alt: "Hakizimana Leogad working on embedded systems" },
+  { src: "/logo.jpg", alt: "Hakizimana Leogad logo" },
 ];
 
 export function Slideshow({ className = "" }: { className?: string }) {

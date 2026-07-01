@@ -36,10 +36,13 @@ export function About() {
               <div className="absolute -top-2 -right-2 h-24 w-24 rounded-full border border-emerald-500/10 animate-spin-slow pointer-events-none" />
               <div className="relative overflow-hidden rounded-2xl border border-emerald-500/10 bg-gradient-to-br from-[#0a0a12] to-[#111118] shadow-xl shadow-emerald-500/5">
                 <img
-                  src="/src/assets/portrait.png"
-                  alt="Hakizimana Leogad"
+                  src="/portrait.png"
+                  alt="Portrait of Hakizimana Leogad, Embedded Systems & IoT Engineer"
+                  width="1086"
+                  height="913"
                   className="w-full h-auto object-cover opacity-90 hover:opacity-100 transition-opacity duration-500"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050508]/60 to-transparent pointer-events-none" />
               </div>
@@ -59,8 +62,8 @@ export function About() {
                 Hakizimana Leogad
               </span>
               , an Embedded Systems and IoT Engineer building smart technology with Arduino, ESP32,
-              Raspberry Pi, and electronics. Passionate about creating intelligent, connected systems
-              powered by innovation and machine learning.
+              Raspberry Pi, and electronics. Passionate about creating intelligent, connected
+              systems powered by innovation and machine learning.
             </p>
 
             <motion.div

@@ -25,6 +25,7 @@ export function Nav() {
 
   return (
     <motion.header
+      role="banner"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", damping: 30, stiffness: 200 }}
@@ -50,16 +51,13 @@ export function Nav() {
           <ul className="hidden items-center gap-1 md:flex">
             {links.map((l) => {
               const isActive =
-                location.pathname === l.to ||
-                (l.to !== "/" && location.pathname.startsWith(l.to));
+                location.pathname === l.to || (l.to !== "/" && location.pathname.startsWith(l.to));
               return (
                 <li key={l.to}>
                   <Link
                     to={l.to}
                     className={`relative rounded-xl px-4 py-2 font-mono text-[11px] uppercase tracking-[0.15em] transition-all duration-300 ${
-                      isActive
-                        ? "text-emerald-400"
-                        : "text-muted-foreground hover:text-foreground"
+                      isActive ? "text-emerald-400" : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     {isActive && (
@@ -96,8 +94,7 @@ export function Nav() {
           >
             {links.map((l) => {
               const isActive =
-                location.pathname === l.to ||
-                (l.to !== "/" && location.pathname.startsWith(l.to));
+                location.pathname === l.to || (l.to !== "/" && location.pathname.startsWith(l.to));
               return (
                 <li key={l.to}>
                   <Link

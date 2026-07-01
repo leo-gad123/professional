@@ -39,10 +39,7 @@ export function Projects() {
   const items = !isLoading && data && data.length > 0 ? data : fallback;
 
   return (
-    <section
-      id="projects"
-      className="relative px-4 sm:px-6 py-16 md:py-24 overflow-hidden"
-    >
+    <section id="projects" className="relative px-4 sm:px-6 py-16 md:py-24 overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
       <div className="absolute bottom-1/3 left-1/4 h-72 w-72 rounded-full bg-emerald-500/3 blur-[100px] pointer-events-none" />
       <div className="mx-auto max-w-5xl">
@@ -82,6 +79,7 @@ export function Projects() {
                           alt={p.title}
                           className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-105"
                           loading="lazy"
+                          decoding="async"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#050508]/40 to-transparent pointer-events-none" />
                       </div>

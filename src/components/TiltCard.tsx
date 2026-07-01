@@ -1,7 +1,13 @@
 import { useRef, type ReactNode } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
-export function TiltCard({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function TiltCard({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);

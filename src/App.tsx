@@ -1,6 +1,7 @@
 import { Component, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { GlowingOrbs } from "@/components/GlowingOrbs";
 import { FloatingTerminal } from "@/components/FloatingTerminal";
@@ -25,7 +26,14 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
   render() {
     if (this.state.error) {
       return (
-        <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div
+          className="flex min-h-screen items-center justify-center bg-background px-4"
+          role="main"
+        >
+          <Helmet>
+            <title>Error | Hakizimana Leogad</title>
+            <meta name="robots" content="noindex" />
+          </Helmet>
           <div className="max-w-md text-center">
             <h1 className="text-7xl font-bold text-foreground">Oops</h1>
             <p className="mt-4 text-sm text-muted-foreground">{this.state.error.message}</p>
@@ -49,7 +57,12 @@ const queryClient = new QueryClient();
 
 function NotFound() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4" role="main">
+      <Helmet>
+        <title>404 — Page Not Found | Hakizimana Leogad</title>
+        <meta name="description" content="The page you're looking for doesn't exist." />
+        <meta name="robots" content="noindex" />
+      </Helmet>
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
@@ -72,10 +85,18 @@ function NotFound() {
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-xl focus:bg-emerald-500 focus:px-4 focus:py-2 focus:text-sm focus:text-white"
+      >
+        Skip to main content
+      </a>
       <GlowingOrbs />
       <Nav />
       <FloatingTerminal />
-      <main>{children}</main>
+      <main id="main-content" role="main">
+        {children}
+      </main>
     </div>
   );
 }
