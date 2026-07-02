@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth.js";
 import projectsRoutes from "./routes/projects.js";
 import siteSettingsRoutes from "./routes/siteSettings.js";
 import slidesRoutes from "./routes/slides.js";
+import chatRoutes from "./routes/chat.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -46,6 +47,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectsRoutes);
 app.use("/api/site-settings", siteSettingsRoutes);
 app.use("/api/slides", slidesRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.get("/api/db-status", (_req, res) => {
   res.json({

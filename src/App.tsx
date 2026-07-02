@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { GlowingOrbs } from "@/components/GlowingOrbs";
 import { FloatingTerminal } from "@/components/FloatingTerminal";
+import { ChatWidget } from "@/components/ChatWidget";
 import { Nav } from "@/components/Nav";
 import { Toaster } from "@/components/ui/sonner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -94,6 +95,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <GlowingOrbs />
       <Nav />
       <FloatingTerminal />
+      <ChatWidget />
       <main id="main-content" role="main">
         {children}
       </main>
