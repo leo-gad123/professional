@@ -7,7 +7,9 @@ import { Slide } from "../models/Slide.js";
 import { requireAuth } from "../middleware/auth.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadsDir = path.resolve(__dirname, "..", "uploads");
+const uploadsDir = process.env.VERCEL
+  ? path.resolve("/tmp", "uploads")
+  : path.resolve(__dirname, "..", "uploads");
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });

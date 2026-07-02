@@ -49,6 +49,10 @@ app.use("/api/site-settings", siteSettingsRoutes);
 app.use("/api/slides", slidesRoutes);
 app.use("/api/chat", chatRoutes);
 
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
+
 app.get("/api/db-status", (_req, res) => {
   res.json({
     connected: mongoose.connection.readyState === 1,
@@ -84,16 +88,12 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ error: "Internal server error" });
 });
 
-// Only listen when run directly (not on Vercel serverless)
-const isVercel = process.env.VERCEL === "1";
-if (!isVercel) {
-  async function start() {
-    await connectDB();
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  }
-  start();
+async function start() {
+  await connectDB();
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
 }
+start();
 
 export default app;
