@@ -61,11 +61,6 @@ app.get("/api/db-status", (_req, res) => {
   });
 });
 
-const uploadsPath = path.resolve(__dirname, "uploads");
-if (fs.existsSync(uploadsPath)) {
-  app.use("/uploads", express.static(uploadsPath));
-}
-
 const distPath = path.resolve(__dirname, "..", "dist");
 const indexHtml = path.join(distPath, "index.html");
 if (fs.existsSync(distPath)) {
@@ -88,12 +83,22 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ error: "Internal server error" });
 });
 
-async function start() {
-  await connectDB();
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+const uploadsPath = process.env.VERCEL
+  ? path.resolve("/tmp", "uploads")
+  : path.resolve(__dirname, "uploads");
+if (fs.existsSync(uploadsPath)) {
+  app.use("/uploads", express.static(uploadsPath));
 }
-start();
+
+const isVercel = process.env.VERCEL === "1";
+if (!isVercel) {
+  async function start() {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  }
+  start();
+}
 
 export default app;
