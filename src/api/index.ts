@@ -15,6 +15,36 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
+async function uploadFile<T>(path: string, file: File): Promise<T> {
+  const token = localStorage.getItem("token");
+  const formData = new FormData();
+  formData.append("image", file);
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const res = await fetch(`${BASE}${path}`, { method: "POST", headers, body: formData });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || `Upload failed (${res.status})`);
+  }
+  return res.json();
+}
+
+async function uploadMultipleFiles<T>(path: string, files: FileList): Promise<T> {
+  const token = localStorage.getItem("token");
+  const formData = new FormData();
+  for (let i = 0; i < files.length; i++) {
+    formData.append("images", files[i]);
+  }
+  const headers: Record<string, string> = {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const res = await fetch(`${BASE}${path}`, { method: "POST", headers, body: formData });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || `Upload failed (${res.status})`);
+  }
+  return res.json();
+}
+
 export const api = {
   // Site Settings
   getSiteSettings: () => request<any>("/site-settings"),
@@ -29,6 +59,17 @@ export const api = {
   updateProject: (id: string, data: Record<string, unknown>) =>
     request<any>(`/projects/${id}`, { method: "PUT", body: JSON.stringify(data) }),
   deleteProject: (id: string) => request<any>(`/projects/${id}`, { method: "DELETE" }),
+
+  // Slides
+  getSlides: () => request<any[]>("/slides"),
+  getAdminSlides: () => request<any[]>("/slides/admin"),
+  uploadSlide: (file: File) => uploadFile<any>("/slides", file),
+  uploadMultipleSlides: (files: FileList) => uploadMultipleFiles<any>("/slides/upload-multiple", files),
+  updateSlide: (id: string, data: Record<string, unknown>) =>
+    request<any>(`/slides/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  deleteSlide: (id: string) => request<any>(`/slides/${id}`, { method: "DELETE" }),
+  reorderSlide: (id: string, sort_order: number) =>
+    request<any>(`/slides/reorder/${id}`, { method: "PUT", body: JSON.stringify({ sort_order }) }),
 
   // Auth
   login: (email: string, password: string) =>

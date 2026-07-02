@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { AdminStatus } from "@/components/admin/AdminStatus";
 import { AdminContact } from "@/components/admin/AdminContact";
 import { AdminProjects } from "@/components/admin/AdminProjects";
+import { AdminSlides } from "@/components/admin/AdminSlides";
 import { LogOut, Settings } from "lucide-react";
 
 export default function AdminPage() {
@@ -68,6 +69,9 @@ export default function AdminPage() {
             <TabsTrigger value="projects" className="flex-1 whitespace-nowrap">
               Projects
             </TabsTrigger>
+            <TabsTrigger value="slides" className="flex-1 whitespace-nowrap">
+              Slides
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="status">
             <AdminStatus />
@@ -77,6 +81,9 @@ export default function AdminPage() {
           </TabsContent>
           <TabsContent value="projects">
             <AdminProjects />
+          </TabsContent>
+          <TabsContent value="slides">
+            <AdminSlides />
           </TabsContent>
         </Tabs>
       </div>

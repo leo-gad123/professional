@@ -8,6 +8,7 @@ import { connectDB } from "./db.js";
 import authRoutes from "./routes/auth.js";
 import projectsRoutes from "./routes/projects.js";
 import siteSettingsRoutes from "./routes/siteSettings.js";
+import slidesRoutes from "./routes/slides.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -44,6 +45,7 @@ app.use(async (_req, _res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectsRoutes);
 app.use("/api/site-settings", siteSettingsRoutes);
+app.use("/api/slides", slidesRoutes);
 
 app.get("/api/db-status", (_req, res) => {
   res.json({
@@ -52,6 +54,11 @@ app.get("/api/db-status", (_req, res) => {
     host: mongoose.connection.host || null,
   });
 });
+
+const uploadsPath = path.resolve(__dirname, "uploads");
+if (fs.existsSync(uploadsPath)) {
+  app.use("/uploads", express.static(uploadsPath));
+}
 
 const distPath = path.resolve(__dirname, "..", "dist");
 const indexHtml = path.join(distPath, "index.html");
