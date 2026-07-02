@@ -88,15 +88,17 @@ export default function AuthPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
-            <button
-              type="button"
-              onClick={() => setMode(mode === "login" ? "register" : "login")}
-              className="text-xs text-muted-foreground hover:text-primary transition-colors"
-            >
-              {mode === "login" ? "No account? Create one" : "Already have an account? Sign in"}
-            </button>
-          </div>
+          {mode !== "login" && (
+            <div className="mt-6 text-center">
+              <button
+                type="button"
+                onClick={() => setMode("login")}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors"
+              >
+                Already have an account? Sign in
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 text-center">
