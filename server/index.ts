@@ -14,7 +14,6 @@ import chatRoutes from "./routes/chat.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -83,15 +82,14 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ error: "Internal server error" });
 });
 
-const uploadsPath = process.env.VERCEL
-  ? path.resolve("/tmp", "uploads")
-  : path.resolve(__dirname, "uploads");
+const uploadsPath = path.resolve(__dirname, "uploads");
 if (fs.existsSync(uploadsPath)) {
   app.use("/uploads", express.static(uploadsPath));
 }
 
-const isVercel = process.env.VERCEL === "1";
-if (!isVercel) {
+const isDirectRun = process.argv[1] === fileURLToPath(import.meta.url);
+if (isDirectRun) {
+  const PORT = process.env.PORT || 3001;
   async function start() {
     await connectDB();
     app.listen(PORT, () => {
