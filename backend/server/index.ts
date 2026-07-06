@@ -8,7 +8,6 @@ dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 import express from "express";
 import mongoose from "mongoose";
 import fs from "node:fs";
-import os from "node:os";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.js";
 import projectsRoutes from "./routes/projects.js";
@@ -110,25 +109,6 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   console.error("Unhandled error:", err);
   res.status(500).json({ error: err.message || "Internal server error" });
 });
-
-const localUploads = path.resolve(__dirname, "uploads");
-const uploadsPath = (() => {
-  if (fs.existsSync(localUploads)) {
-    try {
-      const testFile = path.join(localUploads, ".writable-test");
-      fs.writeFileSync(testFile, "");
-      fs.unlinkSync(testFile);
-      return localUploads;
-    } catch {
-      // not writable, fall through
-    }
-  }
-  return path.join(os.tmpdir(), "portfolio-uploads");
-})();
-if (!fs.existsSync(uploadsPath)) {
-  fs.mkdirSync(uploadsPath, { recursive: true });
-}
-app.use("/uploads", express.static(uploadsPath));
 
 const isDirectRun = process.argv[1] === fileURLToPath(import.meta.url);
 if (isDirectRun) {

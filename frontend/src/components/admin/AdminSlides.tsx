@@ -77,7 +77,7 @@ export function AdminSlides() {
   }
 
   function imgUrl(s: Slide) {
-    if (s.image_url.startsWith("http")) return s.image_url;
+    if (s.image_url.startsWith("http") || s.image_url.startsWith("data:")) return s.image_url;
     return `${BASE.replace(/\/api$/, "")}${s.image_url}`;
   }
 

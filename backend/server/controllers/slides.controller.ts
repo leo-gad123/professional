@@ -1,45 +1,22 @@
 import type { Response } from "express";
 import multer from "multer";
 import path from "node:path";
-import fs from "node:fs";
-import os from "node:os";
-import { fileURLToPath } from "node:url";
 import { Slide } from "../models/Slide.js";
 import { requireAuth } from "../middleware/auth.js";
 import type { AuthRequest } from "../types/index.js";
 
 export { requireAuth };
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export const uploadsDir = (() => {
-  const localDir = path.resolve(__dirname, "..", "uploads");
-  // On Vercel (read-only /var/task), always use /tmp
-  if (fs.existsSync(localDir)) {
-    try {
-      const testFile = path.join(localDir, ".writable-test");
-      fs.writeFileSync(testFile, "");
-      fs.unlinkSync(testFile);
-      return localDir;
-    } catch {
-      // localDir is not writable (e.g. Vercel serverless)
-    }
-  }
-  return path.join(os.tmpdir(), "portfolio-uploads");
-})();
+const mimeMap: Record<string, string> = {
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".webp": "image/webp",
+  ".gif": "image/gif",
+  ".avif": "image/avif",
+};
 
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadsDir),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `slide-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
-  },
-});
-
-const allowedExts = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
+const allowedExts = new Set(Object.keys(mimeMap));
 
 const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   const ext = path.extname(file.originalname).toLowerCase();
@@ -50,8 +27,15 @@ const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterC
   }
 };
 
-export const upload = multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 1024 } });
-export const multiUpload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+export const upload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
+export const multiUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
 
 export async function getAll(_req: AuthRequest, res: Response) {
   try {
@@ -81,7 +65,10 @@ export async function create(req: AuthRequest, res: Response) {
       res.status(400).json({ error: "No image file provided" });
       return;
     }
-    const image_url = `/uploads/${req.file.filename}`;
+    const ext = path.extname(req.file.originalname).toLowerCase();
+    const mime = mimeMap[ext] || "image/jpeg";
+    const b64 = req.file.buffer.toString("base64");
+    const image_url = `data:${mime};base64,${b64}`;
     const slide = await Slide.create({
       image_url,
       alt: (req.body.alt as string) || "Slide image",
@@ -107,11 +94,15 @@ export async function uploadMultiple(req: AuthRequest, res: Response) {
       return;
     }
     const slides = await Slide.insertMany(
-      validFiles.map((f) => ({
-        image_url: `/uploads/${f.filename}`,
-        alt: "Slide image",
-        is_active: true,
-      })),
+      validFiles.map((f) => {
+        const ext = path.extname(f.originalname).toLowerCase();
+        const mime = mimeMap[ext] || "image/jpeg";
+        return {
+          image_url: `data:${mime};base64,${f.buffer.toString("base64")}`,
+          alt: "Slide image",
+          is_active: true,
+        };
+      }),
     );
     res.status(201).json({ slides, skipped: allFiles.length - validFiles.length });
   } catch (err) {
@@ -140,12 +131,6 @@ export async function remove(req: AuthRequest, res: Response) {
     if (!slide) {
       res.status(404).json({ error: "Slide not found" });
       return;
-    }
-    if (slide.image_url) {
-      const filePath = path.join(uploadsDir, path.basename(slide.image_url));
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
     }
     await Slide.findByIdAndDelete(req.params.id);
     res.json({ message: "Slide deleted" });
