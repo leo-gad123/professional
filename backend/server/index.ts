@@ -1,18 +1,19 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
+
 import express from "express";
 import mongoose from "mongoose";
-import path from "node:path";
 import fs from "node:fs";
-import { fileURLToPath } from "node:url";
-import { connectDB } from "./db.js";
+import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.js";
 import projectsRoutes from "./routes/projects.js";
 import siteSettingsRoutes from "./routes/siteSettings.js";
 import slidesRoutes from "./routes/slides.js";
 import chatRoutes from "./routes/chat.js";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const app = express();
 
 app.use((req, res, next) => {
@@ -25,19 +26,16 @@ app.use((req, res, next) => {
   }
   next();
 });
-app.use(express.json());
 
+app.use(express.json());
 app.use((req, _res, next) => {
   console.log(`[${req.method}] ${req.path}`);
   next();
 });
 
 let dbPromise: ReturnType<typeof connectDB> | null = null;
-
 app.use(async (_req, _res, next) => {
-  if (!dbPromise) {
-    dbPromise = connectDB();
-  }
+  if (!dbPromise) dbPromise = connectDB();
   await dbPromise;
   next();
 });
@@ -60,7 +58,7 @@ app.get("/api/db-status", (_req, res) => {
   });
 });
 
-const distPath = path.resolve(__dirname, "..", "dist");
+const distPath = path.resolve(__dirname, "..", "..", "frontend", "dist");
 const indexHtml = path.join(distPath, "index.html");
 if (fs.existsSync(distPath)) {
   app.use(express.static(distPath));

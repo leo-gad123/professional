@@ -1,14 +1,16 @@
-import { Router } from "express";
+import type { Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
-import { requireAuth, type AuthRequest } from "../middleware/auth.js";
+import { requireAuth } from "../middleware/auth.js";
+import type { AuthRequest } from "../types/index.js";
 
-const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
 const ADMIN_EMAIL = "hakizimanaleogad@gmail.com";
 
-router.post("/register", async (req, res) => {
+export { requireAuth };
+
+export async function register(req: AuthRequest, res: Response) {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -32,9 +34,9 @@ router.post("/register", async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.post("/login", async (req, res) => {
+export async function login(req: AuthRequest, res: Response) {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -57,9 +59,9 @@ router.post("/login", async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.post("/change-password", requireAuth, async (req: AuthRequest, res) => {
+export async function changePassword(req: AuthRequest, res: Response) {
   try {
     const { currentPassword, newPassword } = req.body;
     if (!currentPassword || !newPassword) {
@@ -83,9 +85,9 @@ router.post("/change-password", requireAuth, async (req: AuthRequest, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.get("/me", requireAuth, async (req: AuthRequest, res) => {
+export async function getMe(req: AuthRequest, res: Response) {
   try {
     const user = await User.findById(req.userId).select("email");
     if (!user) {
@@ -97,6 +99,4 @@ router.get("/me", requireAuth, async (req: AuthRequest, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
-
-export default router;
+}

@@ -1,10 +1,11 @@
-import { Router } from "express";
+import type { Response } from "express";
 import { SiteSettings } from "../models/SiteSettings.js";
 import { requireAuth } from "../middleware/auth.js";
+import type { AuthRequest } from "../types/index.js";
 
-const router = Router();
+export { requireAuth };
 
-router.get("/", async (_req, res) => {
+export async function get(_req: AuthRequest, res: Response) {
   try {
     let settings = await SiteSettings.findOne().lean();
     if (!settings) {
@@ -15,9 +16,9 @@ router.get("/", async (_req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.put("/", requireAuth, async (req, res) => {
+export async function update(req: AuthRequest, res: Response) {
   try {
     const settings = await SiteSettings.findOneAndUpdate(
       {},
@@ -29,6 +30,4 @@ router.put("/", requireAuth, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
-
-export default router;
+}

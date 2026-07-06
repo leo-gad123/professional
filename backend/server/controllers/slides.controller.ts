@@ -1,15 +1,16 @@
-import { Router } from "express";
+import type { Response } from "express";
 import multer from "multer";
 import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { Slide } from "../models/Slide.js";
 import { requireAuth } from "../middleware/auth.js";
+import type { AuthRequest } from "../types/index.js";
+
+export { requireAuth };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadsDir = process.env.VERCEL
-  ? path.resolve("/tmp", "uploads")
-  : path.resolve(__dirname, "..", "uploads");
+const uploadsDir = path.resolve(__dirname, "..", "uploads");
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -23,21 +24,21 @@ const storage = multer.diskStorage({
   },
 });
 
+const allowedExts = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
+
 const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const allowed = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"];
   const ext = path.extname(file.originalname).toLowerCase();
-  if (allowed.includes(ext)) {
+  if (allowedExts.has(ext)) {
     cb(null, true);
   } else {
-    cb(new Error(`Invalid file type: ${ext}. Allowed: ${allowed.join(", ")}`));
+    cb(new Error(`Invalid file type: ${ext}. Allowed: ${[...allowedExts].join(", ")}`));
   }
 };
 
 const upload = multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 1024 } });
+const multiUpload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
-const router = Router();
-
-router.get("/", async (_req, res) => {
+export async function getAll(_req: AuthRequest, res: Response) {
   try {
     const slides = await Slide.find({ is_active: true })
       .sort({ sort_order: 1, createdAt: -1 })
@@ -47,9 +48,9 @@ router.get("/", async (_req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.get("/admin", requireAuth, async (_req, res) => {
+export async function getAdmin(_req: AuthRequest, res: Response) {
   try {
     const slides = await Slide.find().sort({ sort_order: 1, createdAt: -1 }).lean();
     res.json(slides);
@@ -57,9 +58,9 @@ router.get("/admin", requireAuth, async (_req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.post("/", requireAuth, upload.single("image"), async (req, res) => {
+export async function create(req: AuthRequest, res: Response) {
   try {
     if (!req.file) {
       res.status(400).json({ error: "No image file provided" });
@@ -77,30 +78,34 @@ router.post("/", requireAuth, upload.single("image"), async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.post("/upload-multiple", requireAuth, upload.array("images", 20), async (req, res) => {
+export async function uploadMultiple(req: AuthRequest, res: Response) {
   try {
-    const files = req.files as Express.Multer.File[];
-    if (!files || files.length === 0) {
-      res.status(400).json({ error: "No image files provided" });
+    const allFiles = (req.files as Express.Multer.File[]) || [];
+    const validFiles = allFiles.filter((f) => {
+      const ext = path.extname(f.originalname).toLowerCase();
+      return allowedExts.has(ext);
+    });
+    if (validFiles.length === 0) {
+      res.status(400).json({ error: "No valid image files provided" });
       return;
     }
     const slides = await Slide.insertMany(
-      files.map((f) => ({
+      validFiles.map((f) => ({
         image_url: `/uploads/${f.filename}`,
         alt: "Slide image",
         is_active: true,
       })),
     );
-    res.status(201).json(slides);
+    res.status(201).json({ slides, skipped: allFiles.length - validFiles.length });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.put("/:id", requireAuth, async (req, res) => {
+export async function update(req: AuthRequest, res: Response) {
   try {
     const slide = await Slide.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true, runValidators: true });
     if (!slide) {
@@ -112,9 +117,9 @@ router.put("/:id", requireAuth, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.delete("/:id", requireAuth, async (req, res) => {
+export async function remove(req: AuthRequest, res: Response) {
   try {
     const slide = await Slide.findById(req.params.id);
     if (!slide) {
@@ -133,9 +138,9 @@ router.delete("/:id", requireAuth, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.put("/reorder/:id", requireAuth, async (req, res) => {
+export async function reorder(req: AuthRequest, res: Response) {
   try {
     const slide = await Slide.findByIdAndUpdate(
       req.params.id,
@@ -151,6 +156,4 @@ router.put("/reorder/:id", requireAuth, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
-
-export default router;
+}

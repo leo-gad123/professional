@@ -1,10 +1,11 @@
-import { Router } from "express";
+import type { Response } from "express";
 import { Project } from "../models/Project.js";
 import { requireAuth } from "../middleware/auth.js";
+import type { AuthRequest } from "../types/index.js";
 
-const router = Router();
+export { requireAuth };
 
-router.get("/", async (_req, res) => {
+export async function getAll(_req: AuthRequest, res: Response) {
   try {
     const projects = await Project.find({ is_published: true })
       .sort({ sort_order: 1, createdAt: -1 })
@@ -14,9 +15,9 @@ router.get("/", async (_req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.get("/admin", requireAuth, async (_req, res) => {
+export async function getAdmin(_req: AuthRequest, res: Response) {
   try {
     const projects = await Project.find().sort({ sort_order: 1, createdAt: -1 }).lean();
     res.json(projects);
@@ -24,9 +25,9 @@ router.get("/admin", requireAuth, async (_req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.post("/", requireAuth, async (req, res) => {
+export async function create(req: AuthRequest, res: Response) {
   try {
     const project = await Project.create(req.body);
     res.status(201).json(project);
@@ -34,9 +35,9 @@ router.post("/", requireAuth, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.put("/:id", requireAuth, async (req, res) => {
+export async function update(req: AuthRequest, res: Response) {
   try {
     const project = await Project.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -51,9 +52,9 @@ router.put("/:id", requireAuth, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
+}
 
-router.delete("/:id", requireAuth, async (req, res) => {
+export async function remove(req: AuthRequest, res: Response) {
   try {
     const project = await Project.findByIdAndDelete(req.params.id);
     if (!project) {
@@ -65,6 +66,4 @@ router.delete("/:id", requireAuth, async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-});
-
-export default router;
+}

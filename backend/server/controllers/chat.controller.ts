@@ -1,8 +1,7 @@
-import { Router } from "express";
+import type { Response } from "express";
 import { Project } from "../models/Project.js";
 import { SiteSettings } from "../models/SiteSettings.js";
-
-const router = Router();
+import type { AuthRequest } from "../types/index.js";
 
 const name = "Hakizimana Leogad";
 const title = "Embedded Systems & IoT Engineer";
@@ -24,7 +23,7 @@ const faq: { pattern: RegExp; reply: string }[] = [
   { pattern: /bye|goodbye|see you/i, reply: `Goodbye! Feel free to come back anytime.` },
 ];
 
-router.post("/", async (req, res) => {
+export async function sendMessage(req: AuthRequest, res: Response) {
   try {
     const { message } = req.body as { message?: string };
     if (!message || typeof message !== "string" || !message.trim()) {
@@ -81,6 +80,4 @@ router.post("/", async (req, res) => {
     console.error("Chat error:", err);
     res.status(500).json({ error: "Server error" });
   }
-});
-
-export default router;
+}

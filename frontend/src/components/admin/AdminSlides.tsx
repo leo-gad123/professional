@@ -98,7 +98,6 @@ export function AdminSlides() {
           <input
             ref={folderInputRef}
             type="file"
-            accept="image/*"
             multiple
             className="hidden"
             onChange={handleFolderUpload}
