@@ -11,10 +11,21 @@ import type { AuthRequest } from "../types/index.js";
 export { requireAuth };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const useTemp = !fs.existsSync(path.resolve(__dirname, "..", "uploads"));
-export const uploadsDir = useTemp
-  ? path.join(os.tmpdir(), "portfolio-uploads")
-  : path.resolve(__dirname, "..", "uploads");
+export const uploadsDir = (() => {
+  const localDir = path.resolve(__dirname, "..", "uploads");
+  // On Vercel (read-only /var/task), always use /tmp
+  if (fs.existsSync(localDir)) {
+    try {
+      const testFile = path.join(localDir, ".writable-test");
+      fs.writeFileSync(testFile, "");
+      fs.unlinkSync(testFile);
+      return localDir;
+    } catch {
+      // localDir is not writable (e.g. Vercel serverless)
+    }
+  }
+  return path.join(os.tmpdir(), "portfolio-uploads");
+})();
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });

@@ -78,13 +78,23 @@ app.use((req, res, next) => {
 
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error("Unhandled error:", err);
-  res.status(500).json({ error: "Internal server error" });
+  res.status(500).json({ error: err.message || "Internal server error" });
 });
 
 const localUploads = path.resolve(__dirname, "uploads");
-const uploadsPath = fs.existsSync(localUploads)
-  ? localUploads
-  : path.join(os.tmpdir(), "portfolio-uploads");
+const uploadsPath = (() => {
+  if (fs.existsSync(localUploads)) {
+    try {
+      const testFile = path.join(localUploads, ".writable-test");
+      fs.writeFileSync(testFile, "");
+      fs.unlinkSync(testFile);
+      return localUploads;
+    } catch {
+      // not writable, fall through
+    }
+  }
+  return path.join(os.tmpdir(), "portfolio-uploads");
+})();
 if (!fs.existsSync(uploadsPath)) {
   fs.mkdirSync(uploadsPath, { recursive: true });
 }
