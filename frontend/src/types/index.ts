@@ -29,6 +29,13 @@ export interface SiteSettings {
   linkedin_url: string | null;
   twitter_url: string | null;
   website_url: string | null;
+
+  // SEO
+  seo_title: string | null;
+  seo_description: string | null;
+  seo_keywords: string | null;
+  seo_og_image: string | null;
+  seo_twitter_handle: string | null;
 }
 
 export interface ContactForm {
@@ -39,6 +46,14 @@ export interface ContactForm {
   linkedin_url: string;
   twitter_url: string;
   website_url: string;
+}
+
+export interface SEOForm {
+  seo_title: string;
+  seo_description: string;
+  seo_keywords: string;
+  seo_og_image: string;
+  seo_twitter_handle: string;
 }
 
 export interface Message {

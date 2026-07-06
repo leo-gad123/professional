@@ -51,6 +51,36 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
+app.get("/sitemap.xml", async (_req, res) => {
+  try {
+    const siteUrl = "https://leogad.pages.dev";
+    const today = new Date().toISOString().split("T")[0];
+    const staticPages = [
+      { loc: `${siteUrl}/`, priority: "1.0", changefreq: "monthly" },
+      { loc: `${siteUrl}/about`, priority: "0.8", changefreq: "monthly" },
+      { loc: `${siteUrl}/skills`, priority: "0.8", changefreq: "monthly" },
+      { loc: `${siteUrl}/experience`, priority: "0.8", changefreq: "monthly" },
+      { loc: `${siteUrl}/projects`, priority: "0.9", changefreq: "weekly" },
+      { loc: `${siteUrl}/contact`, priority: "0.7", changefreq: "monthly" },
+    ];
+    const urls = staticPages.map(
+      (p) => `  <url>
+    <loc>${p.loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`,
+    );
+    res.type("application/xml");
+    res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join("\n")}
+</urlset>`);
+  } catch {
+    res.status(500).end();
+  }
+});
+
 app.get("/api/db-status", (_req, res) => {
   res.json({
     connected: mongoose.connection.readyState === 1,

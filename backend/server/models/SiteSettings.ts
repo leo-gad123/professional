@@ -15,6 +15,13 @@ const siteSettingsSchema = new mongoose.Schema(
     linkedin_url: { type: String, default: null },
     twitter_url: { type: String, default: null },
     website_url: { type: String, default: null },
+
+    // SEO fields
+    seo_title: { type: String, default: null },
+    seo_description: { type: String, default: null },
+    seo_keywords: { type: String, default: null },
+    seo_og_image: { type: String, default: null },
+    seo_twitter_handle: { type: String, default: null },
   },
   { timestamps: true },
 );

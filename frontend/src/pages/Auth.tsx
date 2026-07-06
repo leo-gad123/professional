@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { api } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,10 +36,14 @@ export default function AuthPage() {
   }
 
   return (
-    <section
-      className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12"
-      style={{ background: "var(--background)" }}
-    >
+    <>
+      <Helmet>
+        <meta name="robots" content="noindex" />
+      </Helmet>
+      <section
+        className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12"
+        style={{ background: "var(--background)" }}
+      >
       <div className="w-full max-w-md">
         <div className="bg-card rounded-2xl p-5 sm:p-8 card-shadow border border-border">
           <div className="flex items-center gap-3 mb-6">
@@ -112,5 +117,6 @@ export default function AuthPage() {
         </div>
       </div>
     </section>
+    </>
   );
 }
