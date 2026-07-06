@@ -1,0 +1,13 @@
+{
+  "buildCommand": "npx tsc --noEmit",
+  "outputDirectory": ".",
+  "functions": {
+    "api/index.ts": {
+      "memory": 256,
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api" }
+  ]
+}
