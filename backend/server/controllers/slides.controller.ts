@@ -2,6 +2,7 @@ import type { Response } from "express";
 import multer from "multer";
 import path from "node:path";
 import fs from "node:fs";
+import os from "node:os";
 import { fileURLToPath } from "node:url";
 import { Slide } from "../models/Slide.js";
 import { requireAuth } from "../middleware/auth.js";
@@ -10,7 +11,10 @@ import type { AuthRequest } from "../types/index.js";
 export { requireAuth };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadsDir = path.resolve(__dirname, "..", "uploads");
+const useTemp = !fs.existsSync(path.resolve(__dirname, "..", "uploads"));
+export const uploadsDir = useTemp
+  ? path.join(os.tmpdir(), "portfolio-uploads")
+  : path.resolve(__dirname, "..", "uploads");
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -35,8 +39,8 @@ const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterC
   }
 };
 
-const upload = multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 1024 } });
-const multiUpload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+export const upload = multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 1024 } });
+export const multiUpload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 export async function getAll(_req: AuthRequest, res: Response) {
   try {

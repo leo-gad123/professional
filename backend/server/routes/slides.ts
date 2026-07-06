@@ -8,29 +8,16 @@ import {
   remove,
   reorder,
   requireAuth,
+  upload,
+  multiUpload,
 } from "../controllers/slides.controller.js";
-import multer from "multer";
 
 const router = Router();
 
 router.get("/", getAll);
 router.get("/admin", requireAuth, getAdmin);
-router.post("/", requireAuth, create);
-router.post("/upload-multiple", requireAuth, (req, res, next) => {
-  const multiUpload = multer({ limits: { fileSize: 10 * 1024 * 1024 } }).array("images", 50);
-  multiUpload(req, res, (err) => {
-    if (err instanceof multer.MulterError) {
-      res.status(400).json({ error: err.message });
-      return;
-    }
-    if (err) {
-      console.error(err);
-      res.status(400).json({ error: err.message });
-      return;
-    }
-    next();
-  });
-}, uploadMultiple);
+router.post("/", requireAuth, upload.single("image"), create);
+router.post("/upload-multiple", requireAuth, multiUpload.array("images", 50), uploadMultiple);
 router.put("/:id", requireAuth, update);
 router.delete("/:id", requireAuth, remove);
 router.put("/reorder/:id", requireAuth, reorder);
