@@ -4,4 +4,4 @@ Disallow: /auth
 Disallow: /admin
 Disallow: /reset-password
 
-Sitemap: https://backend-theta-beryl-63-beryl.vercel.app/sitemap.xml
+Sitemap: https://leogad.pages.dev/sitemap.xml
