@@ -71,6 +71,27 @@ export const api = {
   reorderSlide: (id: string, sort_order: number) =>
     request<any>(`/slides/reorder/${id}`, { method: "PUT", body: JSON.stringify({ sort_order }) }),
 
+  // Profile
+  getProfile: () => request<{ display_name: string; cv_url: string | null }>("/profile"),
+  updateProfile: (data: { display_name: string }) =>
+    request<any>("/profile", { method: "PUT", body: JSON.stringify(data) }),
+  uploadCV: (file: File) => {
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("cv", file);
+    const headers: Record<string, string> = {};
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    return fetch(`${BASE}/profile/cv`, { method: "POST", headers, body: formData }).then(
+      async (res) => {
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body.error || "CV upload failed");
+        }
+        return res.json() as Promise<{ cv_url: string }>;
+      },
+    );
+  },
+
   // Auth
   login: (email: string, password: string) =>
     request<{ token: string; email: string }>("/auth/login", {

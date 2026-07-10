@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 const siteSettingsSchema = new mongoose.Schema(
   {
+    display_name: { type: String, default: "Hakizimana Leogad" },
+    cv_url: { type: String, default: null },
     availability: {
       type: String,
       enum: ["available", "busy", "unavailable"],

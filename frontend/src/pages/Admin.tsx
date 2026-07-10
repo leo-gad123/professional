@@ -9,6 +9,7 @@ import { AdminContact } from "@/components/admin/AdminContact";
 import { AdminProjects } from "@/components/admin/AdminProjects";
 import { AdminSlides } from "@/components/admin/AdminSlides";
 import { AdminSEO } from "@/components/admin/AdminSEO";
+import { AdminProfile } from "@/components/admin/AdminProfile";
 import { LogOut, Settings } from "lucide-react";
 
 export default function AdminPage() {
@@ -76,6 +77,9 @@ export default function AdminPage() {
             <TabsTrigger value="seo" className="flex-1 whitespace-nowrap">
               SEO
             </TabsTrigger>
+            <TabsTrigger value="profile" className="flex-1 whitespace-nowrap">
+              Profile
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="status">
             <AdminStatus />
@@ -91,6 +95,9 @@ export default function AdminPage() {
           </TabsContent>
           <TabsContent value="seo">
             <AdminSEO />
+          </TabsContent>
+          <TabsContent value="profile">
+            <AdminProfile />
           </TabsContent>
         </Tabs>
       </div>
