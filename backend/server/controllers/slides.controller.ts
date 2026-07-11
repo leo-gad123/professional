@@ -1,11 +1,22 @@
 import type { Response } from "express";
 import multer from "multer";
+import sharp from "sharp";
 import path from "node:path";
 import { Slide } from "../models/Slide.js";
 import { requireAuth } from "../middleware/auth.js";
 import type { AuthRequest } from "../types/index.js";
 
 export { requireAuth };
+
+const TARGET_WIDTH = 843;
+const TARGET_HEIGHT = 945;
+
+async function resizeImage(buffer: Buffer): Promise<Buffer> {
+  return sharp(buffer)
+    .resize(TARGET_WIDTH, TARGET_HEIGHT, { fit: "cover" })
+    .jpeg({ quality: 85 })
+    .toBuffer();
+}
 
 const mimeMap: Record<string, string> = {
   ".jpg": "image/jpeg",
@@ -66,10 +77,9 @@ export async function create(req: AuthRequest, res: Response) {
       res.status(400).json({ error: "No image file provided" });
       return;
     }
-    const ext = path.extname(req.file.originalname).toLowerCase();
-    const mime = mimeMap[ext] || "image/jpeg";
-    const b64 = req.file.buffer.toString("base64");
-    const image_url = `data:${mime};base64,${b64}`;
+    const resized = await resizeImage(req.file.buffer);
+    const b64 = resized.toString("base64");
+    const image_url = `data:image/jpeg;base64,${b64}`;
     const slide = await Slide.create({
       image_url,
       alt: (req.body.alt as string) || "Slide image",
@@ -95,15 +105,16 @@ export async function uploadMultiple(req: AuthRequest, res: Response) {
       return;
     }
     const slides = await Slide.insertMany(
-      validFiles.map((f) => {
-        const ext = path.extname(f.originalname).toLowerCase();
-        const mime = mimeMap[ext] || "image/jpeg";
-        return {
-          image_url: `data:${mime};base64,${f.buffer.toString("base64")}`,
-          alt: "Slide image",
-          is_active: true,
-        };
-      }),
+      await Promise.all(
+        validFiles.map(async (f) => {
+          const resized = await resizeImage(f.buffer);
+          return {
+            image_url: `data:image/jpeg;base64,${resized.toString("base64")}`,
+            alt: "Slide image",
+            is_active: true,
+          };
+        }),
+      ),
     );
     res.status(201).json({ slides, skipped: allFiles.length - validFiles.length });
   } catch (err) {
