@@ -18,7 +18,8 @@ import chatRoutes from "./routes/chat.js";
 const app = express();
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  const origin = process.env.FRONTEND_URL || "*";
+  res.setHeader("Access-Control-Allow-Origin", origin);
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") {
@@ -28,14 +29,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
-app.use((req, _res, next) => {
-  console.log(`[${req.method}] ${req.path}`);
-  next();
-});
+app.use(express.json({ limit: "1mb" }));
 
 let dbPromise: ReturnType<typeof connectDB> | null = null;
-app.use(async (_req, _res, next) => {
+app.use("/api", async (_req, _res, next) => {
   if (!dbPromise) dbPromise = connectDB();
   await dbPromise;
   next();
@@ -52,52 +49,58 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
-app.get("/sitemap.xml", async (_req, res) => {
-  try {
-    const siteUrl = "https://leogad.pages.dev";
-    const today = new Date().toISOString().split("T")[0];
-    const staticPages = [
-      { loc: `${siteUrl}/`, priority: "1.0", changefreq: "monthly" },
-      { loc: `${siteUrl}/about`, priority: "0.8", changefreq: "monthly" },
-      { loc: `${siteUrl}/skills`, priority: "0.8", changefreq: "monthly" },
-      { loc: `${siteUrl}/experience`, priority: "0.8", changefreq: "monthly" },
-      { loc: `${siteUrl}/projects`, priority: "0.9", changefreq: "weekly" },
-      { loc: `${siteUrl}/contact`, priority: "0.7", changefreq: "monthly" },
-    ];
-    const urls = staticPages.map(
-      (p) => `  <url>
+let cachedSitemap: string | null = null;
+let sitemapDate: string | null = null;
+app.get("/sitemap.xml", (_req, res) => {
+  const today = new Date().toISOString().split("T")[0];
+  if (cachedSitemap && sitemapDate === today) {
+    res.type("application/xml");
+    res.send(cachedSitemap);
+    return;
+  }
+  const siteUrl = "https://leogad.pages.dev";
+  const staticPages = [
+    { loc: `${siteUrl}/`, priority: "1.0", changefreq: "monthly" },
+    { loc: `${siteUrl}/about`, priority: "0.8", changefreq: "monthly" },
+    { loc: `${siteUrl}/skills`, priority: "0.8", changefreq: "monthly" },
+    { loc: `${siteUrl}/experience`, priority: "0.8", changefreq: "monthly" },
+    { loc: `${siteUrl}/projects`, priority: "0.9", changefreq: "weekly" },
+    { loc: `${siteUrl}/contact`, priority: "0.7", changefreq: "monthly" },
+  ];
+  const urls = staticPages.map(
+    (p) => `  <url>
     <loc>${p.loc}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
   </url>`,
-    );
-    res.type("application/xml");
-    res.send(`<?xml version="1.0" encoding="UTF-8"?>
+  );
+  cachedSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.join("\n")}
-</urlset>`);
-  } catch {
-    res.status(500).end();
-  }
+</urlset>`;
+  sitemapDate = today;
+  res.type("application/xml");
+  res.send(cachedSitemap);
 });
 
 app.get("/api/db-status", (_req, res) => {
   res.json({
     connected: mongoose.connection.readyState === 1,
     readyState: mongoose.connection.readyState,
-    host: mongoose.connection.host || null,
   });
 });
 
 const distPath = path.resolve(__dirname, "..", "..", "frontend", "dist");
 const indexHtml = path.join(distPath, "index.html");
-if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath));
+const hasDist = fs.existsSync(distPath);
+const hasIndex = fs.existsSync(indexHtml);
+if (hasDist) {
+  app.use(express.static(distPath, { maxAge: "1h" }));
 }
 app.use((req, res, next) => {
   if (req.method === "GET" && !req.path.startsWith("/api")) {
-    if (fs.existsSync(indexHtml)) {
+    if (hasIndex) {
       res.sendFile(indexHtml);
     } else {
       next();

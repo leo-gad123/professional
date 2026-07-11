@@ -49,4 +49,23 @@ ${urls}
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths(), sitemapPlugin()],
+  build: {
+    target: "es2022",
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-motion": ["framer-motion"],
+          "vendor-radix": [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-label",
+            "@radix-ui/react-slot",
+            "@radix-ui/react-switch",
+            "@radix-ui/react-tabs",
+          ],
+          "vendor-query": ["@tanstack/react-query"],
+        },
+      },
+    },
+  },
 });

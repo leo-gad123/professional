@@ -1,23 +1,40 @@
-import { Component, type ReactNode } from "react";
+import { lazy, Suspense, Component, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { GlowingOrbs } from "@/components/GlowingOrbs";
-import { FloatingTerminal } from "@/components/FloatingTerminal";
-import { ChatWidget } from "@/components/ChatWidget";
 import { Nav } from "@/components/Nav";
 import { Toaster } from "@/components/ui/sonner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import HomePage from "@/pages/Home";
-import AboutPage from "@/pages/About";
-import SkillsPage from "@/pages/Skills";
-import ExperiencePage from "@/pages/Experience";
-import ProjectsPage from "@/pages/Projects";
-import ContactPage from "@/pages/Contact";
-import AuthPage from "@/pages/Auth";
-import ResetPasswordPage from "@/pages/ResetPassword";
-import AdminPage from "@/pages/Admin";
+
+const FloatingTerminal = lazy(() =>
+  import("@/components/FloatingTerminal").then((m) => ({ default: m.FloatingTerminal }))
+);
+const ChatWidget = lazy(() =>
+  import("@/components/ChatWidget").then((m) => ({ default: m.ChatWidget }))
+);
+const HomePage = lazy(() => import("@/pages/Home"));
+const AboutPage = lazy(() => import("@/pages/About"));
+const SkillsPage = lazy(() => import("@/pages/Skills"));
+const ExperiencePage = lazy(() => import("@/pages/Experience"));
+const ProjectsPage = lazy(() => import("@/pages/Projects"));
+const ContactPage = lazy(() => import("@/pages/Contact"));
+const AuthPage = lazy(() => import("@/pages/Auth"));
+const ResetPasswordPage = lazy(() => import("@/pages/ResetPassword"));
+const AdminPage = lazy(() => import("@/pages/Admin"));
+
+function PageLoader() {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="flex gap-2">
+        <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-400 [animation-delay:-0.3s]" />
+        <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-400 [animation-delay:-0.15s]" />
+        <div className="h-2 w-2 animate-bounce rounded-full bg-emerald-400" />
+      </div>
+    </div>
+  );
+}
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state = { error: null as Error | null };
@@ -94,8 +111,10 @@ function Layout({ children }: { children: React.ReactNode }) {
       </a>
       <GlowingOrbs />
       <Nav />
-      <FloatingTerminal />
-      <ChatWidget />
+      <Suspense fallback={null}>
+        <FloatingTerminal />
+        <ChatWidget />
+      </Suspense>
       <main id="main-content" role="main">
         {children}
       </main>
@@ -110,6 +129,7 @@ export function App() {
         <ThemeProvider>
           <BrowserRouter>
             <Toaster />
+            <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route
                 element={
@@ -180,6 +200,7 @@ export function App() {
                 path="*"
               />
             </Routes>
+            </Suspense>
           </BrowserRouter>
         </ThemeProvider>
       </QueryClientProvider>

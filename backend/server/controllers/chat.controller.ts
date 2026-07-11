@@ -13,10 +13,10 @@ const faq: { pattern: RegExp; reply: string }[] = [
   { pattern: /who are you|what are you/, reply: `I'm the AI assistant for ${name}, an ${title} from ${location}. I can answer questions about skills, projects, experience, and contact info.` },
   { pattern: /skills|technologies|tech stack|what.*know/i, reply: `${name} specializes in Embedded Systems, IoT, Arduino, ESP32, Raspberry Pi, Python, C++, JavaScript, and automation technologies.` },
   { pattern: /experience|background|biography|about/i, reply: `${name} is an ${title} based in ${location}, crafting intelligent hardware solutions, IoT ecosystems, and automation technologies that bridge the physical and digital worlds.` },
-  { pattern: /contact|email|reach|hire/i, reply: `You can reach ${name} at ${email} or through the contact form on this site. Located in ${location}.` },
+  { pattern: /contact|email|reach|hire/i, reply: `You can reach ${name} at {email} or through the contact form on this site. Located in ${location}.` },
   { pattern: /location|based|where/i, reply: `${name} is based in ${location}.` },
   { pattern: /resume|cv/, reply: `You can download ${name}'s CV from the home page using the "Download CV" button.` },
-  { pattern: /project|portfolio|work/i, reply: `Let me fetch the latest projects for you...` },
+  { pattern: /project|portfolio|work/i, reply: `__FETCH_PROJECTS__` },
   { pattern: /github|repo|source/i, reply: `You can find ${name}'s code at https://github.com/leo-gad123` },
   { pattern: /linkedin/i, reply: `Connect with ${name} on LinkedIn: https://www.linkedin.com/in/leogadhakizimana/` },
   { pattern: /thanks|thank you|appreciate/i, reply: `You're welcome! Feel free to ask anything else.` },
@@ -49,23 +49,34 @@ export async function sendMessage(req: AuthRequest, res: Response) {
 
     for (const faqItem of faq) {
       if (faqItem.pattern.test(msg)) {
-        const projects = await Project.find({ is_published: true }).sort({ sort_order: 1 }).lean();
-        const settings = await SiteSettings.findOne().lean();
         let reply = faqItem.reply;
 
-        if (/\bproject|portfolio|work\b/i.test(msg) && projects.length > 0) {
-          const list = projects
-            .slice(0, 5)
-            .map((p, i) => `${i + 1}. **${p.title}**${p.description ? ` — ${p.description.slice(0, 100)}` : ""}`)
-            .join("\n");
-          reply = `Here are ${name}'s projects:\n\n${list}`;
+        if (reply === "__FETCH_PROJECTS__") {
+          const projects = await Project.find({ is_published: true }).sort({ sort_order: 1 }).lean();
+          if (projects.length > 0) {
+            const list = projects
+              .slice(0, 5)
+              .map((p, i) => `${i + 1}. **${p.title}**${p.description ? ` — ${p.description.slice(0, 100)}` : ""}`)
+              .join("\n");
+            reply = `Here are ${name}'s projects:\n\n${list}`;
+          } else {
+            reply = "No projects have been published yet. Check back soon!";
+          }
         }
 
-        if (settings) {
-          reply = reply
-            .replace(/\{email\}/g, settings.contact_email || email)
-            .replace(/\{phone\}/g, settings.contact_phone || "")
-            .replace(/\{location\}/g, settings.location || location);
+        if (reply.includes("{email}")) {
+          const settings = await SiteSettings.findOne().lean();
+          if (settings) {
+            reply = reply
+              .replace(/\{email\}/g, settings.contact_email || email)
+              .replace(/\{phone\}/g, settings.contact_phone || "")
+              .replace(/\{location\}/g, settings.location || location);
+          } else {
+            reply = reply
+              .replace(/\{email\}/g, email)
+              .replace(/\{phone\}/g, "")
+              .replace(/\{location\}/g, location);
+          }
         }
 
         res.json({ reply });
