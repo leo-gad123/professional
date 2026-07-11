@@ -1,4 +1,5 @@
 const BASE = import.meta.env.VITE_API_URL || "/api";
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const token = localStorage.getItem("token");
@@ -15,7 +16,15 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
+function validateFileSize(file: File) {
+  if (file.size > MAX_FILE_SIZE) {
+    const mb = (file.size / (1024 * 1024)).toFixed(1);
+    throw new Error(`File "${file.name}" is ${mb}MB. Maximum allowed size is 10MB.`);
+  }
+}
+
 async function uploadFile<T>(path: string, file: File): Promise<T> {
+  validateFileSize(file);
   const token = localStorage.getItem("token");
   const formData = new FormData();
   formData.append("image", file);
@@ -30,6 +39,9 @@ async function uploadFile<T>(path: string, file: File): Promise<T> {
 }
 
 async function uploadMultipleFiles<T>(path: string, files: FileList): Promise<T> {
+  for (let i = 0; i < files.length; i++) {
+    validateFileSize(files[i]);
+  }
   const token = localStorage.getItem("token");
   const formData = new FormData();
   for (let i = 0; i < files.length; i++) {
@@ -76,6 +88,7 @@ export const api = {
   updateProfile: (data: { display_name: string }) =>
     request<any>("/profile", { method: "PUT", body: JSON.stringify(data) }),
   uploadCV: (file: File) => {
+    validateFileSize(file);
     const token = localStorage.getItem("token");
     const formData = new FormData();
     formData.append("cv", file);

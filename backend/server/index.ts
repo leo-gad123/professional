@@ -111,6 +111,14 @@ app.use((req, res, next) => {
 });
 
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  if (err.message?.includes("Invalid file type") || err.message?.includes("Only PDF")) {
+    res.status(400).json({ error: err.message });
+    return;
+  }
+  if ((err as any).code === "LIMIT_FILE_SIZE") {
+    res.status(413).json({ error: "File too large. Maximum size is 10MB." });
+    return;
+  }
   console.error("Unhandled error:", err);
   res.status(500).json({ error: err.message || "Internal server error" });
 });

@@ -120,6 +120,7 @@ export function AdminSlides() {
           </Button>
         </div>
       </div>
+      <p className="text-xs text-muted-foreground">Max file size: 10MB. Allowed: JPG, PNG, WebP, GIF, AVIF.</p>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {(slides as Slide[] | undefined)?.map((s, idx) => (
