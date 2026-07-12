@@ -8,12 +8,8 @@ import type { AuthRequest } from "../types/index.js";
 
 export { requireAuth };
 
-const TARGET_WIDTH = 843;
-const TARGET_HEIGHT = 945;
-
-async function resizeImage(buffer: Buffer): Promise<Buffer> {
+async function processImage(buffer: Buffer): Promise<Buffer> {
   return sharp(buffer)
-    .resize(TARGET_WIDTH, TARGET_HEIGHT, { fit: "cover" })
     .jpeg({ quality: 85 })
     .toBuffer();
 }
@@ -77,7 +73,7 @@ export async function create(req: AuthRequest, res: Response) {
       res.status(400).json({ error: "No image file provided" });
       return;
     }
-    const resized = await resizeImage(req.file.buffer);
+    const resized = await processImage(req.file.buffer);
     const b64 = resized.toString("base64");
     const image_url = `data:image/jpeg;base64,${b64}`;
     const slide = await Slide.create({
@@ -107,7 +103,7 @@ export async function uploadMultiple(req: AuthRequest, res: Response) {
     const slides = await Slide.insertMany(
       await Promise.all(
         validFiles.map(async (f) => {
-          const resized = await resizeImage(f.buffer);
+          const resized = await processImage(f.buffer);
           return {
             image_url: `data:image/jpeg;base64,${resized.toString("base64")}`,
             alt: "Slide image",
