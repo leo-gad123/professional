@@ -1,5 +1,5 @@
 const BASE = import.meta.env.VITE_API_URL || "/api";
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const token = localStorage.getItem("token");
@@ -19,7 +19,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 function validateFileSize(file: File) {
   if (file.size > MAX_FILE_SIZE) {
     const mb = (file.size / (1024 * 1024)).toFixed(1);
-    throw new Error(`File "${file.name}" is ${mb}MB. Maximum allowed size is 10MB.`);
+    throw new Error(`File "${file.name}" is ${mb}MB. Maximum allowed size is 50MB.`);
   }
 }
 

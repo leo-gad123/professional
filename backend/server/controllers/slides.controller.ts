@@ -41,12 +41,12 @@ const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterC
 export const upload = multer({
   storage: multer.memoryStorage(),
   fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 50 * 1024 * 1024 },
 });
 export const multiUpload = multer({
   storage: multer.memoryStorage(),
   fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 50 * 1024 * 1024 },
 });
 
 export async function getAll(_req: AuthRequest, res: Response) {

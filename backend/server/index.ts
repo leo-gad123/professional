@@ -116,7 +116,7 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
     return;
   }
   if ((err as any).code === "LIMIT_FILE_SIZE") {
-    res.status(413).json({ error: "File too large. Maximum size is 10MB." });
+    res.status(413).json({ error: "File too large. Maximum size is 50MB." });
     return;
   }
   console.error("Unhandled error:", err);
