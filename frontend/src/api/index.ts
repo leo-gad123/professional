@@ -1,5 +1,42 @@
 const BASE = import.meta.env.VITE_API_URL || "/api";
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
+const VERCEL_BODY_LIMIT = 4 * 1024 * 1024;
+const MAX_DIMENSION = 1920;
+
+async function compressImage(file: File): Promise<File> {
+  if (file.size <= VERCEL_BODY_LIMIT) return file;
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+        const ratio = Math.min(MAX_DIMENSION / width, MAX_DIMENSION / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) return reject(new Error("Compression failed"));
+          resolve(new File([blob], file.name, { type: "image/jpeg" }));
+        },
+        "image/jpeg",
+        0.85,
+      );
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Failed to load image for compression"));
+    };
+    img.src = url;
+  });
+}
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const token = localStorage.getItem("token");
@@ -25,9 +62,10 @@ function validateFileSize(file: File) {
 
 async function uploadFile<T>(path: string, file: File): Promise<T> {
   validateFileSize(file);
+  const compressed = await compressImage(file);
   const token = localStorage.getItem("token");
   const formData = new FormData();
-  formData.append("image", file);
+  formData.append("image", compressed);
   const headers: Record<string, string> = {};
   if (token) headers["Authorization"] = `Bearer ${token}`;
   const res = await fetch(`${BASE}${path}`, { method: "POST", headers, body: formData });
@@ -39,13 +77,16 @@ async function uploadFile<T>(path: string, file: File): Promise<T> {
 }
 
 async function uploadMultipleFiles<T>(path: string, files: FileList): Promise<T> {
-  for (let i = 0; i < files.length; i++) {
-    validateFileSize(files[i]);
-  }
+  const compressedFiles = await Promise.all(
+    Array.from(files).map(async (f) => {
+      validateFileSize(f);
+      return compressImage(f);
+    }),
+  );
   const token = localStorage.getItem("token");
   const formData = new FormData();
-  for (let i = 0; i < files.length; i++) {
-    formData.append("images", files[i]);
+  for (const f of compressedFiles) {
+    formData.append("images", f);
   }
   const headers: Record<string, string> = {};
   if (token) headers["Authorization"] = `Bearer ${token}`;

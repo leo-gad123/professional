@@ -10,6 +10,7 @@ export { requireAuth };
 
 async function processImage(buffer: Buffer): Promise<Buffer> {
   return sharp(buffer)
+    .resize({ width: 1920, withoutEnlargement: true })
     .jpeg({ quality: 85 })
     .toBuffer();
 }
