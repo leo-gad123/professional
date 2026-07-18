@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Terminal } from "lucide-react";
+import { Menu, X, Terminal, Sun, Moon, Eye } from "lucide-react";
+import { useTheme, type Theme } from "@/hooks/useTheme";
 
 const links = [
   { to: "/", label: "Home" },
@@ -12,10 +13,23 @@ const links = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
+const THEME_ICONS: Record<Theme, typeof Sun> = {
+  light: Sun,
+  dark: Moon,
+  blight: Eye,
+};
+
+const THEME_LABELS: Record<Theme, string> = {
+  light: "Light",
+  dark: "Dark",
+  blight: "Blight",
+};
+
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { theme, toggle } = useTheme();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -74,6 +88,17 @@ export function Nav() {
             })}
           </ul>
           <button
+            onClick={toggle}
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/10 transition-all"
+            aria-label={`Switch theme (current: ${THEME_LABELS[theme]})`}
+            title={`Theme: ${THEME_LABELS[theme]}`}
+          >
+            {(() => {
+              const Icon = THEME_ICONS[theme];
+              return <Icon className="h-4 w-4" />;
+            })()}
+          </button>
+          <button
             onClick={() => setOpen(!open)}
             className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500/10 transition-all md:hidden"
             aria-label="Menu"
@@ -111,6 +136,18 @@ export function Nav() {
                 </li>
               );
             })}
+            <li className="pt-1">
+              <button
+                onClick={() => { toggle(); setOpen(false); }}
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+              >
+                {(() => {
+                  const Icon = THEME_ICONS[theme];
+                  return <Icon className="h-4 w-4" />;
+                })()}
+                <span>Theme: {THEME_LABELS[theme]}</span>
+              </button>
+            </li>
           </motion.ul>
         )}
       </AnimatePresence>
